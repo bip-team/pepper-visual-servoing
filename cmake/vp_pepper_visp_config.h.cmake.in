@@ -1,0 +1,13 @@
+/**
+    @file
+    @author Jan Michalczyk 
+    
+    @brief
+*/
+
+#pragma once
+
+#cmakedefine PEPPER_VISP_INTRINSIC_CAMERA_FILE "${PEPPER_VISP_INTRINSIC_CAMERA_FILE}"
+#cmakedefine PEPPER_VISP_LOG_FILE_PATH         "${PEPPER_VISP_LOG_FILE_PATH}"
+#cmakedefine PEPPER_VISP_LOG_VELOCITY         
+#cmakedefine PEPPER_VISP_USE_PEPPER_CONTROLLER         
