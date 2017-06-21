@@ -3,7 +3,7 @@
     <maintainer email="...">Your Name</maintainer>
     -->
 
-    <qibuild name="pepper-vs">
+    <qibuild name="pepper-visual-servoing">
     <!-- Add your project dependencies here
     <depends buildtime="true" runtime="true" names="foo" />
     -->

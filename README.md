@@ -6,7 +6,7 @@ initial setup
     3) cp -R /path/to/remote-sdk /path/to/qibuild-workspace/remote-sdk
     4) qitoolchain create mytoolchain-remote /path/to/qibuild-workspace/sdk/toolchain.xml
     5) qibuild add-config mytoolchain-remote -t mytoolchain-remote
-    6) cd /path/to/qibuild-workspace/; git clone <pepper-vs>
+    6) cd /path/to/qibuild-workspace/; git clone <pepper-visual-servoing>
 
 
 compilation
