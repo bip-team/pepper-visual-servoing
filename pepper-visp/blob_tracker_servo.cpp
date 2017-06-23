@@ -83,7 +83,11 @@ int main(int argc, char** argv)
 #ifdef PEPPER_VISP_LOG_VELOCITY
                 pepper_vs.writeVelocityToFile(velocity);
 #endif
-                
+
+#ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
+                pepper_vs.callPepperController(velocity);
+#endif
+
                 vpDisplay::flush(image);
                 
                 if(vpDisplay::getClick(image, false))
