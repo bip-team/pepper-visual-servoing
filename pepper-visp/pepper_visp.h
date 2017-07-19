@@ -41,7 +41,7 @@
 
 namespace pepper_visp
 {
-    class Camera
+    class CameraId
     {
         public:
             enum Id
@@ -49,6 +49,49 @@ namespace pepper_visp
                 FOREHEAD = 0, 
                 CHIN     = 1
             };
+    };
+    
+    
+    class VelocityType
+    {
+        public:
+            enum Type
+            {
+                UNDEFINED     = 0,
+                TRANSLATIONAL = 1, 
+                ANGULAR       = 2,
+                FULL          = 3
+            };
+
+            
+            static std::size_t getLength(Type velocity_type)
+            {
+                switch(velocity_type)
+                {
+                    case FULL:
+                        return(6);
+                    case ANGULAR:
+                    case TRANSLATIONAL:
+                        return(3);
+                    default:
+                        throw std::runtime_error("Unknown velocity type."); 
+                }
+            }
+
+
+            static std::size_t getOffset(Type velocity_type) 
+            {
+                switch(velocity_type)
+                {
+                    case FULL:
+                    case TRANSLATIONAL:
+                        return(0);
+                    case ANGULAR:
+                        return(3);
+                    default:
+                        throw std::runtime_error("Unknown velocity type."); 
+                }
+            }
     };
 
 
@@ -59,13 +102,13 @@ namespace pepper_visp
             {
                 std::string robot_ip = "10.42.0.61";
                 int robot_port       = 9559;
-                Camera::Id camera_id = Camera::FOREHEAD;
+                CameraId::Id camera_id = CameraId::FOREHEAD;
                 setParameters(robot_ip, robot_port, camera_id);
                 initialize();
             }
             
             
-            PepperVS(const std::string& robot_ip, const int robot_port, Camera::Id camera_id)
+            PepperVS(const std::string& robot_ip, const int robot_port, const CameraId::Id camera_id)
             {
                 setParameters(robot_ip, robot_port, camera_id);
                 initialize();
@@ -122,14 +165,16 @@ namespace pepper_visp
             }
 
             
-            void callPepperController(const vpColVector& velocity_twist)
+            void callPepperController(const vpColVector& velocity_twist, const VelocityType::Type velocity_type)
             {
                 try
                 {
-                    std::vector<double> angular_velocity;
-                    angular_velocity.push_back(velocity_twist[3]);
-                    angular_velocity.push_back(velocity_twist[4]);
-                    angular_velocity.push_back(velocity_twist[5]);
+                    std::vector<double> angular_velocity(VelocityType::getLength(velocity_type));
+                    for(std::size_t i = 0; i < VelocityType::getLength(velocity_type); ++i)
+                    {
+                        angular_velocity[i] = velocity_twist[i + VelocityType::getOffset(velocity_type)];
+                    }
+                    
                     pepper_controller_proxy_->callVoid<std::vector<double> >("setTagAngularVelocity", angular_velocity); 
                 }
                 catch(const std::exception& e)
@@ -140,13 +185,13 @@ namespace pepper_visp
             }
 
 
-            void writeVelocityToFile(const vpColVector& vp_col_vector)
+            void writeVelocityToFile(const vpColVector& velocity_twist, const VelocityType::Type velocity_type)
             {
-                for(std::size_t i = 0; i < vp_col_vector.size() - 1; ++i)
+                for(std::size_t i = 0; i < VelocityType::getLength(velocity_type) - 1; ++i)
                 {
-                    octave_output_stream_ << vp_col_vector[i] << ", ";
+                    octave_output_stream_ << velocity_twist[i + VelocityType::getOffset(velocity_type)] << ", ";
                 }
-                octave_output_stream_ << vp_col_vector[vp_col_vector.size() - 1] << ";" << std::endl;
+                octave_output_stream_ << velocity_twist[VelocityType::getLength(velocity_type) - 1] << ";" << std::endl;
             }
 
 
@@ -192,7 +237,7 @@ namespace pepper_visp
             }
 
 
-            void setParameters(const std::string& robot_ip, const int robot_port, Camera::Id camera_id)
+            void setParameters(const std::string& robot_ip, const int robot_port, CameraId::Id camera_id)
             {
                 robot_ip_          = robot_ip;
                 robot_port_        = robot_port;

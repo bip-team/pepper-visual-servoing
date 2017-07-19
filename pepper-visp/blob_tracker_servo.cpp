@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     try
     {
         // connect to the robot
-        pepper_visp::PepperVS pepper_vs("10.42.0.61", 9559, pepper_visp::Camera::FOREHEAD);
+        pepper_visp::PepperVS pepper_vs("10.42.0.61", 9559, pepper_visp::CameraId::FOREHEAD);
 
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
@@ -30,7 +30,8 @@ int main(int argc, char** argv)
         // servo task
         vpServo task;
         task.setServo(vpServo::EYEINHAND_CAMERA);
-        task.setLambda(0.8);
+        // corresponds to ~300ms loop delay
+        task.setLambda(3.0);
       
         // initialize trackers
         std::size_t i = 0; 
@@ -81,11 +82,11 @@ int main(int argc, char** argv)
                 vpServoDisplay::display(task, pepper_vs.getIntrinsicCameraParameters(), image);
 
 #ifdef PEPPER_VISP_LOG_VELOCITY
-                pepper_vs.writeVelocityToFile(velocity);
+                pepper_vs.writeVelocityToFile(velocity, pepper_visp::VelocityType::FULL);
 #endif
 
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                pepper_vs.callPepperController(velocity);
+                pepper_vs.callPepperController(velocity, pepper_visp::VelocityType::ANGULAR);
 #endif
 
                 vpDisplay::flush(image);
