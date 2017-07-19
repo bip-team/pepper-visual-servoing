@@ -30,8 +30,7 @@ int main(int argc, char** argv)
         // servo task
         vpServo task;
         task.setServo(vpServo::EYEINHAND_CAMERA);
-        // corresponds to ~300ms loop delay
-        task.setLambda(3.0);
+        task.setLambda(0.01);
       
         // initialize trackers
         std::size_t i = 0; 
