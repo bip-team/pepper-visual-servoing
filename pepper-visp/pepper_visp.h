@@ -64,7 +64,7 @@ namespace pepper_visp
             };
 
             
-            static std::size_t getLength(Type velocity_type)
+            static std::size_t getLength(const Type velocity_type)
             {
                 switch(velocity_type)
                 {
@@ -79,7 +79,7 @@ namespace pepper_visp
             }
 
 
-            static std::size_t getOffset(Type velocity_type) 
+            static std::size_t getOffset(const Type velocity_type) 
             {
                 switch(velocity_type)
                 {
