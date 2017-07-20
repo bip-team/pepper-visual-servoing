@@ -169,13 +169,13 @@ namespace pepper_visp
             {
                 try
                 {
-                    std::vector<double> angular_velocity(VelocityType::getLength(velocity_type));
+                    std::vector<double> velocity(VelocityType::getLength(velocity_type));
                     for(std::size_t i = 0; i < VelocityType::getLength(velocity_type); ++i)
                     {
-                        angular_velocity[i] = velocity_twist[i + VelocityType::getOffset(velocity_type)];
+                        velocity[i] = velocity_twist[i + VelocityType::getOffset(velocity_type)];
                     }
                     
-                    pepper_controller_proxy_->callVoid<std::vector<double> >("setTagAngularVelocity", angular_velocity); 
+                    pepper_controller_proxy_->callVoid<std::vector<double> >("setTagAngularVelocity", velocity); 
                 }
                 catch(const std::exception& e)
                 {
