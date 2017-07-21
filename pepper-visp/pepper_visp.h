@@ -60,7 +60,7 @@ namespace pepper_visp
                 UNDEFINED     = 0,
                 TRANSLATIONAL = 1, 
                 ANGULAR       = 2,
-                FULL          = 3
+                COMPLETE      = 3
             };
 
             
@@ -68,7 +68,7 @@ namespace pepper_visp
             {
                 switch(velocity_type)
                 {
-                    case FULL:
+                    case COMPLETE:
                         return(6);
                     case ANGULAR:
                     case TRANSLATIONAL:
@@ -83,7 +83,7 @@ namespace pepper_visp
             {
                 switch(velocity_type)
                 {
-                    case FULL:
+                    case COMPLETE:
                     case TRANSLATIONAL:
                         return(0);
                     case ANGULAR:
