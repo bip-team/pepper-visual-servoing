@@ -81,11 +81,11 @@ int main(int argc, char** argv)
                 vpServoDisplay::display(task, pepper_vs.getIntrinsicCameraParameters(), image);
 
 #ifdef PEPPER_VISP_LOG_VELOCITY
-                pepper_vs.writeVelocityToFile(velocity, pepper_visp::VelocityType::COMPLETE);
+                pepper_vs.writeVelocityToFile(velocity);
 #endif
 
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                pepper_vs.callPepperController(velocity, pepper_visp::VelocityType::ANGULAR);
+                pepper_vs.callPepperController(velocity);
 #endif
 
                 vpDisplay::flush(image);

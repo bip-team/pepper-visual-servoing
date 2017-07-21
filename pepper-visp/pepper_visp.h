@@ -50,49 +50,6 @@ namespace pepper_visp
                 CHIN     = 1
             };
     };
-    
-    
-    class VelocityType
-    {
-        public:
-            enum Type
-            {
-                UNDEFINED     = 0,
-                TRANSLATIONAL = 1, 
-                ANGULAR       = 2,
-                COMPLETE      = 3
-            };
-
-            
-            static std::size_t getLength(const Type velocity_type)
-            {
-                switch(velocity_type)
-                {
-                    case COMPLETE:
-                        return(6);
-                    case ANGULAR:
-                    case TRANSLATIONAL:
-                        return(3);
-                    default:
-                        throw std::runtime_error("Unknown velocity type."); 
-                }
-            }
-
-
-            static std::size_t getOffset(const Type velocity_type) 
-            {
-                switch(velocity_type)
-                {
-                    case COMPLETE:
-                    case TRANSLATIONAL:
-                        return(0);
-                    case ANGULAR:
-                        return(3);
-                    default:
-                        throw std::runtime_error("Unknown velocity type."); 
-                }
-            }
-    };
 
 
     class PepperVS
@@ -165,33 +122,33 @@ namespace pepper_visp
             }
 
             
-            void callPepperController(const vpColVector& velocity_twist, const VelocityType::Type velocity_type)
+            void callPepperController(const vpColVector& velocity_twist)
             {
                 try
                 {
-                    std::vector<double> velocity(VelocityType::getLength(velocity_type));
-                    for(std::size_t i = 0; i < VelocityType::getLength(velocity_type); ++i)
+                    std::vector<double> velocity(velocity_twist.size());
+                    for(std::size_t i = 0; i < velocity.size(); ++i)
                     {
-                        velocity[i] = velocity_twist[i + VelocityType::getOffset(velocity_type)];
+                        velocity[i] = velocity_twist[i];
                     }
                     
-                    pepper_controller_proxy_->callVoid<std::vector<double> >("setTagAngularVelocity", velocity); 
+                    pepper_controller_proxy_->callVoid<std::vector<double> >("setTagVelocity", velocity); 
                 }
                 catch(const std::exception& e)
                 {
-                    std::cerr << "exception connecting to proxy: " << e.what() << std::endl;
+                    std::cerr << "exception calling PepperController." << e.what() << std::endl;
                     throw;
                 }
             }
 
 
-            void writeVelocityToFile(const vpColVector& velocity_twist, const VelocityType::Type velocity_type)
+            void writeVelocityToFile(const vpColVector& velocity_twist)
             {
-                for(std::size_t i = 0; i < VelocityType::getLength(velocity_type) - 1; ++i)
+                for(std::size_t i = 0; i < velocity_twist.size() - 1; ++i)
                 {
-                    octave_output_stream_ << velocity_twist[i + VelocityType::getOffset(velocity_type)] << ", ";
+                    octave_output_stream_ << velocity_twist[i] << ", ";
                 }
-                octave_output_stream_ << velocity_twist[VelocityType::getLength(velocity_type) - 1] << ";" << std::endl;
+                octave_output_stream_ << velocity_twist[velocity_twist.size() - 1] << ";" << std::endl;
             }
 
 
