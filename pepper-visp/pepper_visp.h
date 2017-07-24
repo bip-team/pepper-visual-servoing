@@ -140,6 +140,14 @@ namespace pepper_visp
                     throw;
                 }
             }
+            
+            
+            void callPepperControllerZeroVelocity()
+            {
+                std::size_t velocity_twist_size = 6;
+                vpColVector zero_velocity_twist(velocity_twist_size, 0.0);
+                callPepperController(zero_velocity_twist);
+            }
 
 
             void writeVelocityToFile(const vpColVector& velocity_twist)
@@ -241,7 +249,15 @@ namespace pepper_visp
             {
                 try
                 {
+
+#ifdef PEPPER_VISP_LOG_VELOCITY
                     closeOctaveLogger();
+#endif                    
+                    
+#ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
+                    callPepperControllerZeroVelocity();
+#endif
+
                     if(!video_proxy_)
                     {
                         video_proxy_->unsubscribe(client_name_);
