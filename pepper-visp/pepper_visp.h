@@ -136,7 +136,7 @@ namespace pepper_visp
                 }
                 catch(const std::exception& e)
                 {
-                    std::cerr << "exception calling PepperController." << e.what() << std::endl;
+                    std::cerr << "Exception calling PepperController." << e.what() << std::endl;
                     throw;
                 }
             }
