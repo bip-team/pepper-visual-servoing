@@ -39,6 +39,8 @@
 #include <visp3/core/vpIoTools.h>
 #include <visp3/vs/vpServoDisplay.h>
 
+#include "yaml-cpp/yaml.h"
+
 namespace pepper_visp
 {
     class CameraId
@@ -68,6 +70,13 @@ namespace pepper_visp
             PepperVS(const std::string& robot_ip, const int robot_port, const CameraId::Id camera_id)
             {
                 setParameters(robot_ip, robot_port, camera_id);
+                initialize();
+            }
+            
+            
+            PepperVS(const std::string& config_file)
+            {
+                readParameters(config_file);
                 initialize();
             }
 
@@ -211,6 +220,23 @@ namespace pepper_visp
                 client_name_       = "pepper_visp";
                 camera_id_         = camera_id;
                 camera_resolution_ = AL::kQVGA;
+            }
+            
+            
+            void readParameters(const std::string& config_file)
+            {
+                std::ifstream fin(config_file.c_str());
+                YAML::Parser parser(fin);
+                YAML::Node config;
+                parser.GetNextDocument(config);
+                
+                config["robot_ip"]          >> robot_ip_;           
+                config["robot_port"]        >> robot_port_;         
+                config["fps"]               >> fps_;                
+                config["camera_name"]       >> camera_name_;
+                config["client_name"]       >> client_name_;
+                config["camera_id"]         >> camera_id_;          
+                config["camera_resolution"] >> camera_resolution_;  
             }
             
 

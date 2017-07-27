@@ -12,6 +12,7 @@ int main(int argc, char** argv)
     try
     {
         // connect to the robot
+        //pepper_visp::PepperVS pepper_vs(PEPPER_VISP_CONFIG_FILE);
         pepper_visp::PepperVS pepper_vs("10.42.0.61", 9559, pepper_visp::CameraId::FOREHEAD);
 
         // get image display
