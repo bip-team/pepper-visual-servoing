@@ -145,7 +145,7 @@ namespace pepper_visp
                 }
                 catch(const std::exception& e)
                 {
-                    std::cerr << "Exception calling PepperController." << e.what() << std::endl;
+                    std::cerr << "Exception calling PepperController: " << e.what() << std::endl;
                     throw;
                 }
             }
@@ -225,18 +225,26 @@ namespace pepper_visp
             
             void readParameters(const std::string& config_file)
             {
-                std::ifstream fin(config_file.c_str());
-                YAML::Parser parser(fin);
-                YAML::Node config;
-                parser.GetNextDocument(config);
-                
-                config["robot_ip"]          >> robot_ip_;           
-                config["robot_port"]        >> robot_port_;         
-                config["fps"]               >> fps_;                
-                config["camera_name"]       >> camera_name_;
-                config["client_name"]       >> client_name_;
-                config["camera_id"]         >> camera_id_;          
-                config["camera_resolution"] >> camera_resolution_;  
+                try
+                {
+                    std::ifstream fin(config_file.c_str());
+                    YAML::Parser parser(fin);
+                    YAML::Node config;
+                    parser.GetNextDocument(config);
+                    
+                    config["robot_ip"]          >> robot_ip_;           
+                    config["robot_port"]        >> robot_port_;         
+                    config["fps"]               >> fps_;                
+                    config["camera_name"]       >> camera_name_;
+                    config["client_name"]       >> client_name_;
+                    config["camera_id"]         >> camera_id_;          
+                    config["camera_resolution"] >> camera_resolution_;  
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << "Exception in reading configuration file: " << e.what() << std::endl;
+                    throw;
+                }
             }
             
 
