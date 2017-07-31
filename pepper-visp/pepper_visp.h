@@ -250,7 +250,7 @@ namespace pepper_visp
 
             void initializeOctaveLogger(const std::string& filename)
             {
-                const std::string full_path = PEPPER_VISP_LOG_FILE_PATH + filename;
+                const std::string full_path = PEPPER_VISP_DATA_PATH + filename;
                 octave_output_stream_.open(full_path.c_str());
                 if(!octave_output_stream_)
                 {
