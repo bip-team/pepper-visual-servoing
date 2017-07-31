@@ -39,6 +39,9 @@ int main(int argc, char** argv)
         // get tracker
         boost::shared_ptr<vpMbEdgeKltTracker> tracker(new vpMbEdgeKltTracker);
 
+            pepper_vs.getImage(image);
+            vpDisplay::display(image);
+        
         // tracker settings
         vpMe moving_edge;
         moving_edge.setMaskSize(5);
