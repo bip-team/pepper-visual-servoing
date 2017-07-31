@@ -1,0 +1,27 @@
+V1
+#points
+8
+0     0      0     # pt 0
+0     0     -0.141 # pt 1
+0     0.043 -0.141 # pt 2
+0     0.043  0     # pt 3
+0.043 0.043  0     # pt 4
+0.043 0.043 -0.141 # pt 5
+0.043 0     -0.141 # pt 6
+0.043 0      0     # pt 7
+# lines
+0
+# faces from lines
+0
+# faces from point
+6
+4 0 1 2 3 # rear face
+4 0 7 4 3 # top face
+4 7 6 5 4 # front face
+4 1 6 5 2 # bottom face
+4 0 7 6 1 # left face
+4 3 4 5 2 # right face
+# 3D cylinders
+0
+# 3D circles
+0
