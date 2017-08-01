@@ -39,9 +39,11 @@ int main(int argc, char** argv)
         {
             pepper_vs.getImage(image);
             vpDisplay::display(image);
+            
             tracker.track(image);
-            tracker.getPose(cMo);
-            tracker.display(image, cMo);
+            tracker.getObjectPose(cMo);
+            tracker.displayObjectFrame(image, cMo);
+            
             vpDisplay::displayFrame(image, cMo, camera_parameters, 0.025, vpColor::none, 3);
             vpDisplay::displayText(image, 10, 10, "A click to exit...", vpColor::red);
             vpDisplay::flush(image);
@@ -51,8 +53,6 @@ int main(int argc, char** argv)
                 break;    
             }
         } 
-        
-        vpDisplay::getClick(image);
     }
     catch(const std::exception& e)
     {

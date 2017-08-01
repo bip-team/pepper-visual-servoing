@@ -49,14 +49,14 @@ namespace pepper_visp
             }
 
             
-            void getPose(vpHomogeneousMatrix& cMo)
+            void getObjectPose(vpHomogeneousMatrix& cMo)
             {
                 tracker_->getPose(cMo);
             }
             
 
-            void display(const vpImage<unsigned char>& image, 
-                         const vpHomogeneousMatrix&    cMo)
+            void displayObjectFrame(const vpImage<unsigned char>& image, 
+                                    const vpHomogeneousMatrix&    cMo)
             {
                 tracker_->display(image, cMo, camera_parameters_, vpColor::red, 2, true);
             }
