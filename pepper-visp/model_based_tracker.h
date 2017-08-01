@@ -30,7 +30,6 @@ namespace pepper_visp
             {
                 tracker_.reset(new vpMbEdgeKltTracker);
                 initializeTrackerSettings();
-                camera_parameters_.initPersProjWithoutDistortion(839, 839, 325, 243);
                 tracker_->setCameraParameters(camera_parameters_);
                 tracker_->loadModel(data_path_ + model_filename);
                 tracker_->setDisplayFeatures(true);

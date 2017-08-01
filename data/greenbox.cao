@@ -15,11 +15,11 @@ V1
 0
 # faces from point
 6
-4 0 1 2 3 # rear face
+4 0 3 2 1 # rear face
 4 0 7 4 3 # top face
 4 7 6 5 4 # front face
 4 1 6 5 2 # bottom face
-4 0 7 6 1 # left face
+4 0 1 6 7 # left face
 4 3 4 5 2 # right face
 # 3D cylinders
 0
