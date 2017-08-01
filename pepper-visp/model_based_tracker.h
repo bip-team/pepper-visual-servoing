@@ -14,7 +14,6 @@
 #include <visp3/core/vpIoTools.h>
 #include <visp3/mbt/vpMbEdgeTracker.h>
 #include <visp3/mbt/vpMbEdgeKltTracker.h>
-#include <visp3/io/vpVideoReader.h>
 
 #include <boost/pointer_cast.hpp>
 
@@ -59,6 +58,7 @@ namespace pepper_visp
                                     const vpHomogeneousMatrix&    cMo)
             {
                 tracker_->display(image, cMo, camera_parameters_, vpColor::red, 2, true);
+                vpDisplay::displayFrame(image, cMo, camera_parameters_, 0.025, vpColor::none, 3);
             }
 
 

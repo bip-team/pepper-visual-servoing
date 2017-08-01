@@ -7,6 +7,7 @@
 
 #include "pepper_visp.h"
 #include "model_based_tracker.h"
+#include "four_blobs_pattern_tracker.h"
 
 int main(int argc, char** argv)
 {
@@ -16,9 +17,8 @@ int main(int argc, char** argv)
         pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
 
         // object pose in camera frame
-        vpHomogeneousMatrix cMo;
-        vpCameraParameters  camera_parameters =
-                                pepper_vs.getIntrinsicCameraParameters();
+        vpHomogeneousMatrix cMo_box, cMo_blobs;
+        vpCameraParameters  camera_parameters = pepper_vs.getIntrinsicCameraParameters();
 
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
@@ -26,25 +26,28 @@ int main(int argc, char** argv)
         vpDisplay::setTitle(image, "ViSP viewer");
         
         pepper_vs.getImage(image);
-        vpDisplay::display(image);
 
-        // get tracker
-        pepper_visp::ModelBasedTracker tracker(PEPPER_VISP_DATA_PATH,
-                                               camera_parameters,
-                                               "greenbox.cao");
-        
-        tracker.initializeByClick(image, "greenbox.init");
+        // get trackers
+        pepper_visp::FourBlobsPatternTracker blobs_tracker(camera_parameters);
+        blobs_tracker.initializeByClick(image);
+
+        pepper_visp::ModelBasedTracker box_tracker(PEPPER_VISP_DATA_PATH,
+                                                   camera_parameters,
+                                                   "greenbox.cao");
+        box_tracker.initializeByClick(image, "greenbox.init");
 
         while(true)
         {
             pepper_vs.getImage(image);
             vpDisplay::display(image);
             
-            tracker.track(image);
-            tracker.getObjectPose(cMo);
-            tracker.displayObjectFrame(image, cMo);
+            blobs_tracker.getObjectPose(cMo_blobs, image);  
+            blobs_tracker.displayObjectFrame(image, cMo_blobs);
             
-            vpDisplay::displayFrame(image, cMo, camera_parameters, 0.025, vpColor::none, 3);
+            box_tracker.track(image);
+            box_tracker.getObjectPose(cMo_box);
+            box_tracker.displayObjectFrame(image, cMo_box);
+
             vpDisplay::displayText(image, 10, 10, "A click to exit...", vpColor::red);
             vpDisplay::flush(image);
 
