@@ -8,6 +8,7 @@
 #include "pepper_visp.h"
 #include "model_based_tracker.h"
 #include "four_blobs_pattern_tracker.h"
+#include "frame_aligner_task.h"
 
 int main(int argc, char** argv)
 {
@@ -36,6 +37,11 @@ int main(int argc, char** argv)
                                                    "greenbox.cao");
         box_tracker.initializeByClick(image, "greenbox.init");
 
+        // servo task initialization
+        double lambda = 0.1;
+        pepper_visp::FrameAlignerTask frame_aligner_task(lambda);
+
+        vpColVector velocity(6);
         while(true)
         {
             pepper_vs.getImage(image);
@@ -47,6 +53,13 @@ int main(int argc, char** argv)
             box_tracker.track(image);
             box_tracker.getObjectPose(cMo_box);
             box_tracker.displayObjectFrame(cMo_box, image);
+
+            frame_aligner_task.update(cMo_blobs, cMo_box);
+            frame_aligner_task.getVelocity(velocity);
+
+#ifdef PEPPER_VISP_LOG_VELOCITY
+            pepper_vs.writeVelocityToFile(velocity);
+#endif
 
             vpDisplay::displayText(image, 10, 10, "A click to exit...", vpColor::red);
             vpDisplay::flush(image);
