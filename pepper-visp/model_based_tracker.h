@@ -54,8 +54,8 @@ namespace pepper_visp
             }
             
 
-            void displayObjectFrame(const vpImage<unsigned char>& image, 
-                                    const vpHomogeneousMatrix&    cMo)
+            void displayObjectFrame(const vpHomogeneousMatrix&    cMo, 
+                                    const vpImage<unsigned char>& image)
             {
                 tracker_->display(image, cMo, camera_parameters_, vpColor::red, 2, true);
                 vpDisplay::displayFrame(image, cMo, camera_parameters_, 0.025, vpColor::none, 3);

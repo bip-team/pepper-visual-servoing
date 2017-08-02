@@ -44,7 +44,7 @@ namespace pepper_visp
             }
 
             
-            void getObjectPose(vpHomogeneousMatrix& cMo, 
+            void getObjectPose(vpHomogeneousMatrix&          cMo, 
                                const vpImage<unsigned char>& image)
             {
                 for(std::size_t i = 0; i < blobs_.size(); ++i)
@@ -86,8 +86,8 @@ namespace pepper_visp
             }
             
 
-            void displayObjectFrame(const vpImage<unsigned char>& image, 
-                                    const vpHomogeneousMatrix&    cMo)
+            void displayObjectFrame(const vpHomogeneousMatrix&    cMo,
+                                    const vpImage<unsigned char>& image)
             {
                 vpDisplay::displayFrame(image, cMo, camera_parameters_, 0.05, vpColor::none);
             }

@@ -42,11 +42,11 @@ int main(int argc, char** argv)
             vpDisplay::display(image);
             
             blobs_tracker.getObjectPose(cMo_blobs, image);  
-            blobs_tracker.displayObjectFrame(image, cMo_blobs);
+            blobs_tracker.displayObjectFrame(cMo_blobs, image);
             
             box_tracker.track(image);
             box_tracker.getObjectPose(cMo_box);
-            box_tracker.displayObjectFrame(image, cMo_box);
+            box_tracker.displayObjectFrame(cMo_box, image);
 
             vpDisplay::displayText(image, 10, 10, "A click to exit...", vpColor::red);
             vpDisplay::flush(image);
