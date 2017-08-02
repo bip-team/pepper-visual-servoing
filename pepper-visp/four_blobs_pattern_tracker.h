@@ -79,15 +79,16 @@ namespace pepper_visp
                     {
                         cMo = cMo_lag;
                     }
+                    
+                    tracker_initialized_ = true;
                 }
-                tracker_initialized_ = true;
                 
                 pose.computePose(vpPose::VIRTUAL_VS, cMo);
             }
             
 
             void displayObjectFrame(const vpHomogeneousMatrix&    cMo,
-                                    const vpImage<unsigned char>& image)
+                                    const vpImage<unsigned char>& image) const
             {
                 vpDisplay::displayFrame(image, cMo, camera_parameters_, 0.05, vpColor::none);
             }

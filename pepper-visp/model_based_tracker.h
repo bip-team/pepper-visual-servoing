@@ -36,26 +36,26 @@ namespace pepper_visp
 
 
             void initializeByClick(const vpImage<unsigned char>& image, 
-                                   const std::string& init_filename)
+                                   const std::string& init_filename) const
             {
                 tracker_->initClick(image, data_path_ + init_filename, true);
             }
 
 
-            void track(const vpImage<unsigned char>& image)
+            void track(const vpImage<unsigned char>& image) const
             {
                 tracker_->track(image);
             }
 
             
-            void getObjectPose(vpHomogeneousMatrix& cMo)
+            void getObjectPose(vpHomogeneousMatrix& cMo) const
             {
                 tracker_->getPose(cMo);
             }
             
 
             void displayObjectFrame(const vpHomogeneousMatrix&    cMo, 
-                                    const vpImage<unsigned char>& image)
+                                    const vpImage<unsigned char>& image) const
             {
                 tracker_->display(image, cMo, camera_parameters_, vpColor::red, 2, true);
                 vpDisplay::displayFrame(image, cMo, camera_parameters_, 0.025, vpColor::none, 3);
