@@ -7,6 +7,18 @@
 
 #include "pepper_visp.h"
 
+#include "vp_pepper_visp_config.h"
+
+#include <visp/vpImage.h>
+#include <visp3/blob/vpDot2.h>
+#include <visp/vpDisplayX.h>
+#include <visp3/visual_features/vpFeaturePoint.h>
+#include <visp3/core/vpPoint.h>
+#include <visp3/vs/vpServo.h>
+#include <visp3/visual_features/vpFeatureBuilder.h>
+#include <visp3/vs/vpServoDisplay.h>
+#include <visp3/visual_features/vpFeatureDepth.h>
+
 int main(int argc, char** argv)
 {
     try

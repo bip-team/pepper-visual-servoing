@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <visp/vpCameraParameters.h>
 #include <visp3/blob/vpDot2.h>
 #include <visp3/core/vpPixelMeterConversion.h>
 #include <visp3/vision/vpPose.h>

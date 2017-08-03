@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <visp/vpCameraParameters.h>
 #include <visp3/gui/vpDisplayGDI.h>
 #include <visp3/gui/vpDisplayOpenCV.h>
 #include <visp3/gui/vpDisplayX.h>
@@ -15,6 +16,7 @@
 #include <visp3/mbt/vpMbEdgeTracker.h>
 #include <visp3/mbt/vpMbEdgeKltTracker.h>
 
+#include <boost/shared_ptr.hpp>
 #include <boost/pointer_cast.hpp>
 
 namespace pepper_visp

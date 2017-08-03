@@ -21,23 +21,10 @@
 
 #include "vp_pepper_visp_config.h"
 
-#include <visp/vpXmlParserHomogeneousMatrix.h>
 #include <visp/vpImageConvert.h>
 #include <visp/vpXmlParserCamera.h>
 #include <visp/vpImage.h>
 #include <visp/vpCameraParameters.h>
-#include <visp/vpHomogeneousMatrix.h>
-#include <visp3/blob/vpDot2.h>
-#include <visp/vpDisplayX.h>
-#include <visp/vpIoTools.h>
-#include <visp/vpImageIo.h>
-#include <visp3/core/vpMath.h>
-#include <visp3/visual_features/vpFeaturePoint.h>
-#include <visp3/core/vpPoint.h>
-#include <visp3/vs/vpServo.h>
-#include <visp3/visual_features/vpFeatureBuilder.h>
-#include <visp3/core/vpIoTools.h>
-#include <visp3/vs/vpServoDisplay.h>
 
 #include "yaml-cpp/yaml.h"
 
