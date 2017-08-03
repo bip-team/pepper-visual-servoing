@@ -18,15 +18,30 @@
 
 namespace pepper_visp
 {
+    /**
+     * @brief Class used for PBVS task aligning
+     *        two frames expressed in camera frame
+     */
     class FrameAlignerTask 
     {
         public:
+            /**
+             * @brief Constructor
+             *
+             * @param[in] lambda 
+             */
             FrameAlignerTask(const double lambda) : lambda_(lambda)
             {
                 initialize();
             }
 
 
+            /**
+             * @brief Update task
+             *
+             * @param[in] cMe 
+             * @param[in] cMo
+             */
             void update(const vpHomogeneousMatrix& cMe, const vpHomogeneousMatrix& cMo)
             {
                 // update twist between camera and end-effector
@@ -41,12 +56,20 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Get velocity
+             *
+             * @param[in] velocity
+             */
             void getVelocity(vpColVector& velocity)
             {
                 velocity = task_.computeControlLaw();
             }
 
 
+            /**
+             * @brief Destructor
+             */
             ~FrameAlignerTask()
             {
                 task_.kill();
@@ -54,6 +77,14 @@ namespace pepper_visp
 
 
         private:
+            /**
+             * @brief Get translational/rotational offset of object
+             *        in end-effector frame
+             *
+             * @param[in, out] eMo 
+             * @param[in]      cMe
+             * @param[in]      cMo
+             */
             void getObjectToEndEffectorTransform(vpHomogeneousMatrix&       eMo, 
                                                  const vpHomogeneousMatrix& cMe,
                                                  const vpHomogeneousMatrix& cMo) const
@@ -62,6 +93,9 @@ namespace pepper_visp
             }
             
             
+            /**
+             * @brief Initialize
+             */
             void initialize()
             {
                 translation_feature_.setFeatureTranslationType(vpFeatureTranslation::cdMc);

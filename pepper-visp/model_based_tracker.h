@@ -19,9 +19,20 @@
 
 namespace pepper_visp
 {
+    /**
+     * @brief Class used for tracking an object 
+     *        defined .cao file (ex. box)
+     */
     class ModelBasedTracker 
     {
         public:
+            /**
+             * @brief Constructor
+             *
+             * @param[in] data_path 
+             * @param[in] camera_parameters
+             * @param[in] model_filename
+             */
             ModelBasedTracker(const std::string&        data_path, 
                               const vpCameraParameters& camera_parameters,
                               const std::string&        model_filename) : data_path_(data_path),
@@ -35,6 +46,13 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Initialize tracker by clicking on four
+             *        points defined in .init file
+             *
+             * @param[in] image
+             * @param[in] init_filename
+             */
             void initializeByClick(const vpImage<unsigned char>& image, 
                                    const std::string& init_filename) const
             {
@@ -42,18 +60,34 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Track object
+             *
+             * @param[in] image
+             */
             void track(const vpImage<unsigned char>& image) const
             {
                 tracker_->track(image);
             }
 
             
+            /**
+             * @brief Get object pose in camera frame
+             *
+             * @param[in, out] cMo
+             */
             void getObjectPose(vpHomogeneousMatrix& cMo) const
             {
                 tracker_->getPose(cMo);
             }
             
 
+            /**
+             * @brief Display object frame (pose)
+             *
+             * @param[in] cMo
+             * @param[in] image
+             */
             void displayObjectFrame(const vpHomogeneousMatrix&    cMo, 
                                     const vpImage<unsigned char>& image) const
             {
@@ -63,6 +97,9 @@ namespace pepper_visp
 
 
         private:  
+            /**
+             * @brief Initialize tracker settings
+             */
             void initializeTrackerSettings()
             {
                 vpMe moving_edge;

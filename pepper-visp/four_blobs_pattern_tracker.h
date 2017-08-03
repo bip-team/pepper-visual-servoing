@@ -13,15 +13,30 @@
 
 namespace pepper_visp
 {
+    /**
+     * @brief Class used for pose estimation 
+     *        from four blobs of given size and
+     *        distribution
+     */
     class FourBlobsPatternTracker 
     {
         public:
+            /**
+             * @brief Constructor
+             *
+             * @param[in] camera_parameters
+             */
             FourBlobsPatternTracker(const vpCameraParameters& camera_parameters) : camera_parameters_(camera_parameters)
             {
                 initialize();
             }
 
 
+            /**
+             * @brief Initialize tracker by click
+             *
+             * @param[in] image
+             */
             void initializeByClick(const vpImage<unsigned char>& image)
             {
                 std::size_t clicks            = 0;
@@ -44,6 +59,12 @@ namespace pepper_visp
             }
 
             
+            /**
+             * @brief Get object pose in the camera frame
+             *
+             * @param[in, out] cMo object pose in the camera frame 
+             * @param[in]      image
+             */
             void getObjectPose(vpHomogeneousMatrix&          cMo, 
                                const vpImage<unsigned char>& image)
             {
@@ -87,6 +108,12 @@ namespace pepper_visp
             }
             
 
+            /**
+             * @brief Display frame (pose) of tracked object
+             *
+             * @param[in] cMo
+             * @param[in] image
+             */
             void displayObjectFrame(const vpHomogeneousMatrix&    cMo,
                                     const vpImage<unsigned char>& image) const
             {
@@ -95,6 +122,9 @@ namespace pepper_visp
 
 
         private:
+            /**
+             * @brief Initialize
+             */
             void initialize()
             {
                 std::size_t number_of_blobs = 4;
