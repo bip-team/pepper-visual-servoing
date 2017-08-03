@@ -43,6 +43,9 @@
 
 namespace pepper_visp
 {
+    /**
+     * @brief Id of the camera
+     */
     class CameraId
     {
         public:
@@ -54,9 +57,15 @@ namespace pepper_visp
     };
 
 
+    /**
+     * @brief Class for interfacing with pepper cameras
+     */
     class PepperVS
     {
         public:
+            /**
+             * @brief Constructor
+             */
             PepperVS()
             {
                 std::string robot_ip = "10.42.0.61";
@@ -67,6 +76,13 @@ namespace pepper_visp
             }
             
             
+            /**
+             * @brief Constructor
+             *
+             * @param[in] robot_ip 
+             * @param[in] robot_port 
+             * @param[in] camera_id
+             */
             PepperVS(const std::string& robot_ip, const int robot_port, const CameraId::Id camera_id)
             {
                 setParameters(robot_ip, robot_port, camera_id);
@@ -74,6 +90,11 @@ namespace pepper_visp
             }
             
             
+            /**
+             * @brief Constructor
+             *
+             * @param[in] config_file 
+             */
             PepperVS(const std::string& config_file)
             {
                 readParameters(config_file);
@@ -81,6 +102,11 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Get image
+             *
+             * @param[in, out] image 
+             */
             void getImage(vpImage<unsigned char>& image)
             {
                 /* Retrieve an image from the camera.
@@ -113,24 +139,40 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Get image width
+             */
             unsigned int getImageWidth() const
             {
                 return(static_cast<unsigned int>(image_width_));
             }
             
             
+            /**
+             * @brief Get image height
+             */
             unsigned int getImageHeight() const
             {
                 return(static_cast<unsigned int>(image_height_));
             }
             
             
+            /**
+             * @brief Get intrinsic camera parameters
+             *
+             * @return camera parameters
+             */
             const vpCameraParameters& getIntrinsicCameraParameters() const
             {
                 return(intrinsic_camera_parameters_);
             }
 
             
+            /**
+             * @brief Call PepperController class
+             *
+             * @param[in] velocity_twist
+             */
             void callPepperController(const vpColVector& velocity_twist)
             {
                 try
@@ -151,6 +193,10 @@ namespace pepper_visp
             }
             
             
+            /**
+             * @brief Call PepperController class with zero velocity
+             *             argument
+             */
             void callPepperControllerZeroVelocity()
             {
                 std::size_t velocity_twist_size = 6;
@@ -159,6 +205,11 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Write velocity twist to file
+             *
+             * @param[in] velocity_twist
+             */
             void writeVelocityToFile(const vpColVector& velocity_twist)
             {
                 for(std::size_t i = 0; i < velocity_twist.size() - 1; ++i)
@@ -169,6 +220,9 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Destructor
+             */
             ~PepperVS()
             {
                 cleanup();
@@ -176,6 +230,9 @@ namespace pepper_visp
 
 
         private:
+            /**
+             * @brief Initialize
+             */
             void initialize()
             {
                 try
@@ -211,6 +268,13 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Set parameters
+             *
+             * @param[in] robot_ip
+             * @param[in] robot_port
+             * @param[in] camera_id
+             */
             void setParameters(const std::string& robot_ip, const int robot_port, CameraId::Id camera_id)
             {
                 robot_ip_          = robot_ip;
@@ -223,6 +287,11 @@ namespace pepper_visp
             }
             
             
+            /**
+             * @brief Read parameters from config file
+             *
+             * @param[in] config_file
+             */
             void readParameters(const std::string& config_file)
             {
                 try
@@ -248,6 +317,11 @@ namespace pepper_visp
             }
             
 
+            /**
+             * @brief Initialize octave logger
+             *
+             * @param[in] filename
+             */
             void initializeOctaveLogger(const std::string& filename)
             {
                 const std::string full_path = PEPPER_VISP_DATA_PATH + filename;
@@ -260,6 +334,9 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Close octave logger
+             */
             void closeOctaveLogger()
             {
                 octave_output_stream_ << "]" << std::endl;
@@ -267,6 +344,9 @@ namespace pepper_visp
             }
 
             
+            /**
+             * @brief Parse intrinsic camera parameters
+             */
             void parseIntrinsicCameraParameters()
             {
                 vpXmlParserCamera vp_xml_parser;
@@ -279,6 +359,9 @@ namespace pepper_visp
             }
 
             
+            /**
+             * @brief cleanup
+             */
             void cleanup()
             {
                 try
