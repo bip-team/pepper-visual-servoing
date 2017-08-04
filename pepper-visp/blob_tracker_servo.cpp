@@ -25,7 +25,6 @@ int main(int argc, char** argv)
     {
         // connect to the robot
         pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
-        //pepper_visp::PepperVS pepper_vs("10.42.0.61", 9559, pepper_visp::CameraId::FOREHEAD);
 
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
@@ -119,11 +118,6 @@ int main(int argc, char** argv)
                 
                 current_depth_feature.buildFrom(s_current[number_of_features - 1].get_x(), s_current[number_of_features - 1].get_y(),
                                                 current_depth, log(current_depth / desired_depth));
-                
-
-
-                std::cout << "depth: " << current_depth << std::endl; 
-
 
                 velocity = task.computeControlLaw();
                 vpServoDisplay::display(task, camera_parameters, image);
