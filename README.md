@@ -41,7 +41,7 @@ Videos
 
 1) IBVS control of Pepper's head using ViSP with humoto and humoto-pepper-controller.
 
-[![Alt text for your video](https://img.youtube.com/vi/rAa1wuI50ng/0.jpg)](https://www.youtube.com/watch?v=rAa1wuI50ng)
+[![Alt text for your video](https://img.youtube.com/vi/p91vm6vH2Xk/0.jpg)](https://www.youtube.com/watch?v=p91vm6vH2Xk)
 
 2) IBVS control of Pepper's head using ViSP with humoto and humoto-pepper-controller - whole body.
 
