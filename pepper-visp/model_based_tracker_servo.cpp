@@ -49,10 +49,17 @@ int main(int argc, char** argv)
             
             blobs_tracker.getObjectPose(cMo_blobs, image);  
             blobs_tracker.displayObjectFrame(cMo_blobs, image);
-            
+
             box_tracker.track(image);
             box_tracker.getObjectPose(cMo_box);
             box_tracker.displayObjectFrame(cMo_box, image);
+
+            // fix frame for testing
+            //cMo_box = cMo_blobs;
+            //vpTranslationVector t = cMo_box.getTranslationVector();
+            //t[0] = t[0] - 10.0;
+            //t[1] = t[1] - 10.0;
+            //cMo_box.insert(t);
 
             frame_aligner_task.update(cMo_blobs, cMo_box);
             frame_aligner_task.getVelocity(velocity);

@@ -24,8 +24,8 @@ int main(int argc, char** argv)
     try
     {
         // connect to the robot
-        //pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
-        pepper_visp::PepperVS pepper_vs("10.42.0.61", 9559, pepper_visp::CameraId::FOREHEAD);
+        pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
+        //pepper_visp::PepperVS pepper_vs("10.42.0.61", 9559, pepper_visp::CameraId::FOREHEAD);
 
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
@@ -40,10 +40,24 @@ int main(int argc, char** argv)
         std::vector<vpImagePoint>   image_points(number_of_features);
         std::vector<vpDot2>         blobs(number_of_features);
 
+        vpCameraParameters camera_parameters = pepper_vs.getIntrinsicCameraParameters();
+        
+        // depth feature
+        vpFeatureDepth current_depth_feature;
+        vpFeatureDepth desired_depth_feature;
+
+        // desired distance
+        double desired_depth = 0.40; // 40[cm]
+        
+        // depth/area ration coeff which needs calibration 
+        double depth_to_area; 
+
         // servo task
         vpServo task;
         task.setServo(vpServo::EYEINHAND_CAMERA);
-        task.setLambda(0.01);
+        task.setInteractionMatrixType(vpServo::CURRENT, vpServo::PSEUDO_INVERSE);
+        //task.setLambda(0.01);
+        task.setLambda(0.1);
       
         // initialize trackers
         std::size_t i = 0; 
@@ -57,14 +71,24 @@ int main(int argc, char** argv)
             if(vpDisplay::getClick(image, image_points[i], false))
             {
                 blobs[i].initTracking(image, image_points[i]);
-                vpFeatureBuilder::create(s_current[i], pepper_vs.getIntrinsicCameraParameters(), blobs[i]);
-                vpFeatureBuilder::create(s_desired[i], pepper_vs.getIntrinsicCameraParameters(), blobs[i]);
+                vpFeatureBuilder::create(s_current[i], camera_parameters, blobs[i]);
+                vpFeatureBuilder::create(s_desired[i], camera_parameters, blobs[i]);
                 task.addFeature(s_current[i], s_desired[i]);
                 i++;
             }
 
             if(i == number_of_features)
             {
+                current_depth_feature.buildFrom(s_current[number_of_features - 1].get_x(),
+                                                s_current[number_of_features - 1].get_y(), desired_depth, 0);
+                desired_depth_feature.buildFrom(s_desired[number_of_features - 1].get_x(),
+                                                s_desired[number_of_features - 1].get_y(), desired_depth, 0);
+
+                // get depth/area coeff 
+                depth_to_area = desired_depth / (1.0 / sqrt(blobs[number_of_features - 1].getArea() /
+                                       (camera_parameters.get_px() * camera_parameters.get_py())));
+
+                task.addFeature(current_depth_feature, desired_depth_feature);
                 break;
             }
                 
@@ -87,11 +111,22 @@ int main(int argc, char** argv)
                     blobs[i].setGraphics(true);
                     blobs[i].setGraphicsThickness(2);
                     blobs[i].track(image);
-                    vpFeatureBuilder::create(s_current[i], pepper_vs.getIntrinsicCameraParameters(), blobs[i]);
+                    vpFeatureBuilder::create(s_current[i], camera_parameters, blobs[i]);
                 }
+
+                double current_depth = depth_to_area * (1.0 / sqrt(blobs[number_of_features - 1].getArea() /
+                                       (camera_parameters.get_px() * camera_parameters.get_py())));
                 
+                current_depth_feature.buildFrom(s_current[number_of_features - 1].get_x(), s_current[number_of_features - 1].get_y(),
+                                                current_depth, log(current_depth / desired_depth));
+                
+
+
+                std::cout << "depth: " << current_depth << std::endl; 
+
+
                 velocity = task.computeControlLaw();
-                vpServoDisplay::display(task, pepper_vs.getIntrinsicCameraParameters(), image);
+                vpServoDisplay::display(task, camera_parameters, image);
 
 #ifdef PEPPER_VISP_LOG_VELOCITY
                 pepper_vs.writeVelocityToFile(velocity);
