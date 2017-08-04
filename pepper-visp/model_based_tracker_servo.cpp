@@ -2,7 +2,7 @@
     @file
     @author Jan Michalczyk 
 
-    @brief Simple servo loop for model-based tracking
+    @brief Visual servo loop using model-based tracking
 */
 
 #include "pepper_visp.h"
@@ -10,6 +10,16 @@
 #include "four_blobs_pattern_tracker.h"
 #include "frame_aligner_task.h"
 
+/**
+ * @brief Control loop for aligning two estimated
+ *        frames using PBVS
+ *        (ex. tracked hand on tracked object)
+ *
+ * @param[in] argc number of arguments
+ * @param[in] argv arguments
+ *
+ * @return status
+ */
 int main(int argc, char** argv)
 {
     try

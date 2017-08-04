@@ -128,6 +128,8 @@ namespace pepper_visp
 
             /**
              * @brief Get image width
+             *
+             * @return image width
              */
             unsigned int getImageWidth() const
             {
@@ -137,6 +139,8 @@ namespace pepper_visp
             
             /**
              * @brief Get image height
+             *
+             * @return image haight
              */
             unsigned int getImageHeight() const
             {

@@ -2,7 +2,8 @@
     @file
     @author Jan Michalczyk 
 
-    @brief Simple servo loop using blob tracker to track blobs
+    @brief Visual servo loop using blob tracker and
+           depth estimation
 */
 
 #include "pepper_visp.h"
@@ -19,6 +20,15 @@
 #include <visp3/vs/vpServoDisplay.h>
 #include <visp3/visual_features/vpFeatureDepth.h>
 
+/**
+ * @brief Visual servo control loop using blob tracking
+ *        and depth estimation
+ *
+ * @param[in] argc number of arguments
+ * @param[in] argv arguments
+ *
+ * @return status
+ */
 int main(int argc, char** argv)
 {
     try
