@@ -31,12 +31,23 @@ namespace pepper_visp
     class BlobsWithDepthTask
     {
         public:
+            /**
+             * @brief Constructor
+             *
+             * @param[in] camera_parameters
+             */
             BlobsWithDepthTask(vpCameraParameters camera_parameters) : camera_parameters_(camera_parameters)                              
             {
                 initialize();
             }
 
 
+            /**
+             * @brief Initialize task
+             *
+             * @param[in] blobs 
+             * @param[in] desired_depth
+             */
             void initializeTask(const std::vector<vpDot2>& blobs, const double desired_depth)
             {
                 s_current_.resize(blobs.size());
@@ -57,6 +68,13 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Update task
+             *
+             * @param[in] blobs 
+             * @param[in] desired_depth
+             * @param[in] current_depth
+             */
             void update(const std::vector<vpDot2>& blobs, const double desired_depth, const double current_depth)
             {
                 for(std::size_t i = 0; i < blobs.size(); ++i)
@@ -69,18 +87,31 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Display servo
+             *
+             * @param[in] image 
+             */
             void displayServo(const vpImage<unsigned char>& image) const
             {
                 vpServoDisplay::display(task_, camera_parameters_, image);
             }
             
 
+            /**
+             * @brief Get velocity
+             *
+             * @param[in, out] velocity
+             */
             void getVelocity(vpColVector& velocity)
             {
                 velocity = task_.computeControlLaw();
             }
             
 
+            /**
+             * @brief Destructor
+             */
             ~BlobsWithDepthTask()
             {
                 task_.kill();
@@ -88,6 +119,9 @@ namespace pepper_visp
 
             
         private:
+            /**
+             * @brief Initialize
+             */
             void initialize()
             {
                 task_.setServo(vpServo::EYEINHAND_CAMERA);

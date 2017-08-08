@@ -25,6 +25,13 @@ namespace pepper_visp
     class BlobsWithDepthTracker
     {
         public:
+            /**
+             * @brief Constructor
+             *
+             * @param[in] number_of_features 
+             * @param[in] desired_depth
+             * @param[in] camera_parameters
+             */
             BlobsWithDepthTracker(const std::size_t  number_of_features,
                                   const double       desired_depth,
                                   vpCameraParameters camera_parameters) : number_of_features_(number_of_features),
@@ -35,6 +42,11 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Initialize tracker by click
+             *
+             * @param[in] image 
+             */
             void initializeByClick(const vpImage<unsigned char>& image)
             {
                 vpDisplay::display(image);
@@ -64,6 +76,11 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Track features
+             *
+             * @param[in] image
+             */
             void track(const vpImage<unsigned char>& image)
             {
                 for(std::size_t i = 0; i < blobs_.size(); ++i)
@@ -73,6 +90,9 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Get current depth
+             */
             double getCurrentDepth() const
             {
                 double current_depth = depth_to_area_ * (1.0 / sqrt(blobs_[number_of_features_ - 1].getArea() /
@@ -82,12 +102,18 @@ namespace pepper_visp
             }
 
             
+            /**
+             * @brief Get desired depth
+             */
             double getDesiredDepth() const
             {
                 return(desired_depth_);
             }
 
 
+            /**
+             * @brief Get blobs
+             */
             const std::vector<vpDot2>& getBlobs() const
             {
                 return(blobs_);
@@ -95,6 +121,9 @@ namespace pepper_visp
 
 
         private:
+            /**
+             * @brief Initialize
+             */
             void initialize()
             {
                 image_points_.resize(number_of_features_);
@@ -102,6 +131,9 @@ namespace pepper_visp
             }
 
 
+            /**
+             * @brief Compute depth to area coefficient
+             */
             void computeDepthToAreaCoeff()
             {
                 depth_to_area_ = desired_depth_ / (1.0 / sqrt(blobs_[number_of_features_ - 1].getArea() /
