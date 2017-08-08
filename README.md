@@ -23,6 +23,9 @@ Installation and usage
 
 It is assumed that one has ViSP (https://github.com/lagadic/visp.git) installed on their system.  
 After the build binaries are installed in the folder '/path/to/qibuild-workspace/pepper-visual-servoing/build-my-toolchain-name/sdk/bin'.
+Camera calibration files should be stored in visp xml format in the '/path/to/qibuild-workspace/pepper-visual-servoing/config' folder. It is convenient to calibrate your
+camera using visp tools.
+
 
 Known issues
 ============
