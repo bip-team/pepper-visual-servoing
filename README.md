@@ -21,6 +21,10 @@ If your toolchain is called 'mytoolchain-remote', it's enough to just type '`mak
 Installation and usage
 ======================
 
+This project is supposed to work together with our whole-body controller for pepper (humoto-controller-pepper).
+Visual servoing control loops sends velocity commands to the robot (twist vectors).
+It requires humoto-controller-pepper to be compiled from branch 'jm-visual-servoing'.
+
 It is assumed that one has ViSP (https://github.com/lagadic/visp.git) installed on their system.  
 After the build binaries are installed in the folder '/path/to/qibuild-workspace/pepper-visual-servoing/build-my-toolchain-name/sdk/bin'.
 Camera calibration files should be stored in visp xml format in the '/path/to/qibuild-workspace/pepper-visual-servoing/config' folder. It is convenient to calibrate your
