@@ -78,7 +78,7 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                pepper_vs.callPepperController(velocity);
+                pepper_vs.callPepperController(velocity, "CameraTop_optical_frame");
 #endif
 
                 vpDisplay::flush(image);
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
             {
 
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                pepper_vs.callPepperControllerZeroVelocity();
+                pepper_vs.callPepperControllerZeroVelocity("CameraTop_optical_frame");
 #endif
 
             }

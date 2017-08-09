@@ -157,14 +157,15 @@ namespace pepper_visp
             {
                 return(intrinsic_camera_parameters_);
             }
-
+            
             
             /**
-             * @brief Call PepperController class
+             * @brief Call PepperController class function with tag name
              *
              * @param[in] velocity_twist
+             * @param[in] tag_name
              */
-            void callPepperController(const vpColVector& velocity_twist)
+            void callPepperController(const vpColVector& velocity_twist, const std::string& tag_name)
             {
                 try
                 {
@@ -174,7 +175,7 @@ namespace pepper_visp
                         velocity[i] = velocity_twist[i];
                     }
                     
-                    pepper_controller_proxy_->callVoid<std::vector<double> >("setTagVelocity", velocity); 
+                    pepper_controller_proxy_->callVoid<std::vector<double>, std::string>("setTagVelocityByName", velocity, tag_name); 
                 }
                 catch(const std::exception& e)
                 {
@@ -188,11 +189,11 @@ namespace pepper_visp
              * @brief Call PepperController class with zero velocity
              *             argument
              */
-            void callPepperControllerZeroVelocity()
+            void callPepperControllerZeroVelocity(const std::string& tag_name)
             {
                 std::size_t velocity_twist_size = 6;
                 vpColVector zero_velocity_twist(velocity_twist_size, 0.0);
-                callPepperController(zero_velocity_twist);
+                callPepperController(zero_velocity_twist, tag_name);
             }
 
 
@@ -361,10 +362,6 @@ namespace pepper_visp
 #ifdef PEPPER_VISP_LOG_VELOCITY
                     closeOctaveLogger();
 #endif                    
-                    
-#ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                    callPepperControllerZeroVelocity();
-#endif
 
                     if(!video_proxy_)
                     {
