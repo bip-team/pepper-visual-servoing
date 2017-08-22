@@ -51,7 +51,9 @@ int main(int argc, char** argv)
         blobs_with_depth_tracker.initializeByClick(image);
 
         // get task
-        pepper_visp::BlobsWithDepthTask blobs_with_depth_task(camera_parameters);
+        pepper_visp::BlobsWithDepthTask blobs_with_depth_task(camera_parameters, 
+                                                              "blobs_tracker_servo.yaml");
+        
         blobs_with_depth_task.initializeTask(blobs_with_depth_tracker.getBlobs(), 
                                              blobs_with_depth_tracker.getDesiredDepth());
 

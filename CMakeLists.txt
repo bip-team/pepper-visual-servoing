@@ -11,6 +11,7 @@ find_package(VISP REQUIRED)
 
 include(pepper_visp OPTIONAL)
 
+set(PEPPER_VISP_CONFIG_PATH           "${CMAKE_SOURCE_DIR}/config/"                               CACHE STRING "")
 set(PEPPER_VISP_INTRINSIC_CAMERA_FILE "${CMAKE_SOURCE_DIR}/config/pepper_cameras.xml"             CACHE STRING "")
 set(PEPPER_VISP_FOREHEAD_CONFIG_FILE  "${CMAKE_SOURCE_DIR}/config/pepper_vs_forehead_config.yaml" CACHE STRING "")
 set(PEPPER_VISP_CHIN_CONFIG_FILE      "${CMAKE_SOURCE_DIR}/config/pepper_vs_chin_config.yaml"     CACHE STRING "")

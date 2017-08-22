@@ -34,11 +34,11 @@ namespace pepper_visp
              * @param[in] desired_depth
              * @param[in] camera_parameters
              */
-            BlobsWithDepthTracker(const std::size_t  number_of_features,
-                                  const double       desired_depth,
-                                  vpCameraParameters camera_parameters) : number_of_features_(number_of_features),
-                                                                          desired_depth_(desired_depth),
-                                                                          camera_parameters_(camera_parameters)                              
+            BlobsWithDepthTracker(const std::size_t         number_of_features,
+                                  const double              desired_depth,
+                                  const vpCameraParameters& camera_parameters) : number_of_features_(number_of_features),
+                                                                                 desired_depth_(desired_depth),
+                                                                                 camera_parameters_(camera_parameters)                              
             {
                 initialize();
             }

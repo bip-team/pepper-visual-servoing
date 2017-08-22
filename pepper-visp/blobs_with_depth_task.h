@@ -24,6 +24,8 @@
 #include <visp3/vs/vpServoDisplay.h>
 #include <visp3/visual_features/vpFeatureDepth.h>
 
+#include "yaml-cpp/yaml.h"
+
 namespace pepper_visp
 {
     /**
@@ -38,8 +40,23 @@ namespace pepper_visp
              *
              * @param[in] camera_parameters
              */
-            BlobsWithDepthTask(vpCameraParameters camera_parameters) : camera_parameters_(camera_parameters)                              
+            BlobsWithDepthTask(const vpCameraParameters& camera_parameters) : camera_parameters_(camera_parameters)                              
             {
+                setDefaults();
+                initialize();
+            }
+            
+            
+            /**
+             * @brief Constructor
+             *
+             * @param[in] config_file
+             * @param[in] camera_parameters
+             */
+            BlobsWithDepthTask(const vpCameraParameters& camera_parameters, 
+                               const std::string&        config_file) : camera_parameters_(camera_parameters)                              
+            {
+                readParameters(std::string(PEPPER_VISP_CONFIG_PATH) + config_file);
                 initialize();
             }
 
@@ -122,14 +139,47 @@ namespace pepper_visp
             
         private:
             /**
+             * @brief Read parameters from config file
+             *
+             * @param[in] config_file
+             */
+            void readParameters(const std::string& config_file)
+            {
+                std::cout << config_file << std::endl;
+                try
+                {
+                    std::ifstream fin(config_file.c_str());
+                    YAML::Parser parser(fin);
+                    YAML::Node config;
+                    parser.GetNextDocument(config);
+                    
+                    config["lambda"] >> lambda_;           
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << "Exception in reading configuration file: " << e.what() << std::endl;
+                    throw;
+                }
+            }
+
+
+            /**
+             * @brief Set default parameters
+             */
+            void setDefaults()
+            {
+                lambda_ = 0.1;
+            }
+            
+            
+            /**
              * @brief Initialize
              */
             void initialize()
             {
+                task_.setLambda(lambda_);
                 task_.setServo(vpServo::EYEINHAND_CAMERA);
                 task_.setInteractionMatrixType(vpServo::CURRENT, vpServo::PSEUDO_INVERSE);
-                task_.setLambda(0.01);
-                //task.setLambda(0.1);
             }
 
 
@@ -140,5 +190,7 @@ namespace pepper_visp
             vpFeatureDepth              current_depth_feature_;
             vpFeatureDepth              desired_depth_feature_;
             vpServo                     task_;
+
+            double                      lambda_;
     };
 }//pepper_visp
