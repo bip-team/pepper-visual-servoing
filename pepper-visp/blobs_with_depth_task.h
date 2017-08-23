@@ -145,7 +145,6 @@ namespace pepper_visp
              */
             void readParameters(const std::string& config_file)
             {
-                std::cout << config_file << std::endl;
                 try
                 {
                     std::ifstream fin(config_file.c_str());
