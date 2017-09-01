@@ -1,1 +1,2 @@
-lambda: 0.9
+blobs_with_depth_task:
+  lambda: 0.2

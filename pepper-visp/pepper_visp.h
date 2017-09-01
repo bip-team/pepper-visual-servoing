@@ -28,7 +28,7 @@
 #include <visp/vpImage.h>
 #include <visp/vpCameraParameters.h>
 
-#include "yaml-cpp/yaml.h"
+#include "config_reader.h"
 
 namespace pepper_visp
 {
@@ -288,20 +288,16 @@ namespace pepper_visp
              */
             void readParameters(const std::string& config_file)
             {
+                yaml_config::ConfigReader config_reader(config_file);
                 try
                 {
-                    std::ifstream fin(config_file.c_str());
-                    YAML::Parser parser(fin);
-                    YAML::Node config;
-                    parser.GetNextDocument(config);
-                    
-                    config["robot_ip"]          >> robot_ip_;           
-                    config["robot_port"]        >> robot_port_;         
-                    config["fps"]               >> fps_;                
-                    config["camera_name"]       >> camera_name_;
-                    config["client_name"]       >> client_name_;
-                    config["camera_id"]         >> camera_id_;          
-                    config["camera_resolution"] >> camera_resolution_;  
+                    config_reader.readScalar("pepper_visp", "robot_ip",          robot_ip_);
+                    config_reader.readScalar("pepper_visp", "robot_port",        robot_port_);
+                    config_reader.readScalar("pepper_visp", "fps",               fps_);
+                    config_reader.readScalar("pepper_visp", "camera_name",       camera_name_);
+                    config_reader.readScalar("pepper_visp", "client_name",       client_name_);
+                    config_reader.readScalar("pepper_visp", "camera_id",         camera_id_);
+                    config_reader.readScalar("pepper_visp", "camera_resolution", camera_resolution_);
                 }
                 catch(const std::exception& e)
                 {

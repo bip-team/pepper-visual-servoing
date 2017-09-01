@@ -24,7 +24,7 @@
 #include <visp3/vs/vpServoDisplay.h>
 #include <visp3/visual_features/vpFeatureDepth.h>
 
-#include "yaml-cpp/yaml.h"
+#include "config_reader.h"
 
 namespace pepper_visp
 {
@@ -145,14 +145,10 @@ namespace pepper_visp
              */
             void readParameters(const std::string& config_file)
             {
+                yaml_config::ConfigReader config_reader(config_file); 
                 try
                 {
-                    std::ifstream fin(config_file.c_str());
-                    YAML::Parser parser(fin);
-                    YAML::Node config;
-                    parser.GetNextDocument(config);
-                    
-                    config["lambda"] >> lambda_;           
+                    config_reader.readScalar("blobs_with_depth_task", "lambda", lambda_); 
                 }
                 catch(const std::exception& e)
                 {
