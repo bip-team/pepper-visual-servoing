@@ -1,5 +1,5 @@
 pepper_visp:
-  robot_ip: 10.42.0.61
+  robot_ip: 169.254.181.178
   robot_port: 9559
   fps: 30
   camera_name: pepper_chin_camera
