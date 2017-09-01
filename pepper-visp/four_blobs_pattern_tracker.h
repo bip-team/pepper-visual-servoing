@@ -136,10 +136,10 @@ namespace pepper_visp
                 tracked_points_.resize(number_of_blobs);
                 
                 // order important when initializing
-                reference_points_[0] = vpPoint(-0.03, -0.03, 0);
-                reference_points_[1] = vpPoint( 0.03, -0.03, 0);
-                reference_points_[2] = vpPoint( 0.03,  0.03, 0);
-                reference_points_[3] = vpPoint(-0.03,  0.03, 0);
+                reference_points_[0] = vpPoint(-0.013, -0.013, 0);
+                reference_points_[1] = vpPoint( 0.013, -0.013, 0);
+                reference_points_[2] = vpPoint( 0.013,  0.013, 0);
+                reference_points_[3] = vpPoint(-0.013,  0.013, 0);
 
                 tracker_initialized_ = false;
             }
