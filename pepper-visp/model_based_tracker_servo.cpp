@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     try
     {
         // connect to the robot
-        pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
+        pepper_visp::PepperVS pepper_vs(PEPPER_VISP_CHIN_CONFIG_FILE);
 
         // object pose in camera frame
         vpHomogeneousMatrix cMo_box, cMo_blobs;

@@ -1,2 +1,3 @@
 build-*
 pepper_visp/vp_pepper_visp_config.h
+data/greenbox.0.pos
