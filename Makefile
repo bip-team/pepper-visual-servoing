@@ -8,6 +8,6 @@ clean:
 	rm -Rf build-*
 
 update:
-	git submodule update --init
+	git submodule update --init --recursive
 
 .PHONY: clean 

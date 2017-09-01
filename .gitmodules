@@ -1,0 +1,3 @@
+[submodule "contrib/config-yaml"]
+	path = contrib/config-yaml
+	url = https://github.com/jmichalczyk/config-yaml.git
