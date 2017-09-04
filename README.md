@@ -30,6 +30,7 @@ After the build binaries are installed in the folder '/path/to/qibuild-workspace
 Camera calibration files should be stored in visp xml format in the '/path/to/qibuild-workspace/pepper-visual-servoing/config' folder. It is convenient to calibrate your
 camera using visp tools.
 
+The project has been developed under ubuntu 14.04 and compiled using aldebaran toolchain naoqi-sdk-2.4.3.28-linux64.
 
 Known issues
 ============
