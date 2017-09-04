@@ -24,7 +24,7 @@
 #include <visp3/vs/vpServoDisplay.h>
 #include <visp3/visual_features/vpFeatureDepth.h>
 
-#include "config_reader.h"
+#include "config-yaml/config_reader.h"
 
 namespace pepper_visp
 {

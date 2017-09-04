@@ -28,7 +28,7 @@
 #include <visp/vpImage.h>
 #include <visp/vpCameraParameters.h>
 
-#include "config_reader.h"
+#include "config-yaml/config_reader.h"
 
 namespace pepper_visp
 {
