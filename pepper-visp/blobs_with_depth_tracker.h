@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "pepper_visp.h"
-
 #include "vp_pepper_visp_config.h"
+
+#include "pepper_visp.h"
 
 #include <visp/vpImage.h>
 #include <visp3/blob/vpDot2.h>

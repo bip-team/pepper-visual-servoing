@@ -111,7 +111,7 @@ namespace pepper_visp
                 task_.setLambda(lambda_);
 
                 // set end-effector jacobian to identity
-                std::size_t dofs = 6;
+                const std::size_t dofs = 6;
                 vpMatrix I(dofs, dofs);
                 I.eye();
                 task_.set_eJe(I);

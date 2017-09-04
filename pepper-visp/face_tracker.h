@@ -38,7 +38,7 @@ namespace pepper_visp
              * @param[in] image
              * @return    face detected
              */
-            bool detectFace(const vpImage<unsigned char>& image)
+            const bool detectFace(const vpImage<unsigned char>& image)
             {
                 bool face_detected = face_detector_.detect(image);
                 if(face_detector_.getNbObjects() > 1)
@@ -49,13 +49,24 @@ namespace pepper_visp
                 return(face_detected);
             }
             
+            
+            /**
+             * @brief Get face center of gravity
+             *
+             * @return    face cog
+             */
+            const vpImagePoint getFaceCog() const
+            {
+                return(face_detector_.getCog(0));
+            }
+            
 
             /**
              * @brief Display rectangle around detected face
              *
              * @param[in] image
              */
-            void displayFace(const vpImage<unsigned char>& image)
+            void displayFace(const vpImage<unsigned char>& image) const
             {
                 vpDisplay::displayRectangle(image, face_detector_.getBBox(0), vpColor::green, false, 4);
             }

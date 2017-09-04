@@ -13,6 +13,7 @@
 
 #include "pepper_visp.h"
 #include "face_tracker.h"
+#include "face_with_depth_task.h"
 
 /**
  * @brief Visual servo control loop using face tracking
@@ -34,11 +35,18 @@ int main(int argc, char** argv)
         vpDisplayX d(image);
         vpDisplay::setTitle(image, "ViSP viewer");
 
+        vpCameraParameters camera_parameters = pepper_vs.getIntrinsicCameraParameters();
+        
         pepper_vs.getImage(image);
         
         // get tracker
         pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml");
 
+        // get task
+        pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters);
+        face_depth_task.initializeTask(image);
+
+        vpColVector velocity;
         while(true)
         {
             try
@@ -50,6 +58,10 @@ int main(int argc, char** argv)
             
                 if(face_tracker.detectFace(image))
                 {
+                    face_depth_task.update(face_tracker.getFaceCog());
+                    face_depth_task.getVelocity(velocity);
+
+                    face_depth_task.displayServo(image);
                     face_tracker.displayFace(image);
                 }
 
