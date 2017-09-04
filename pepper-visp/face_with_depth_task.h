@@ -165,12 +165,12 @@ namespace pepper_visp
              */
             void initialize()
             {
-                desired_x_, desired_y_, current_x_, current_y_ = 0.0;
-                desired_z_, current_z_                         = 0.8;
+                desired_x_ = desired_y_ = current_x_ = current_y_ = 0.0;
+                desired_z_ = current_z_                           = 0.8;
                 
                 task_.setLambda(lambda_);
                 task_.setServo(vpServo::EYEINHAND_CAMERA);
-                task_.setInteractionMatrixType(vpServo::CURRENT, vpServo::PSEUDO_INVERSE);
+                task_.setInteractionMatrixType(vpServo::DESIRED);
             }
 
 
