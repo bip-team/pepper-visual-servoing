@@ -63,6 +63,15 @@ int main(int argc, char** argv)
 
                     face_depth_task.displayServo(image);
                     face_tracker.displayFace(image);
+
+#ifdef PEPPER_VISP_LOG_VELOCITY
+                pepper_vs.writeVelocityToFile(velocity);
+#endif
+
+#ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
+                pepper_vs.callPepperController(velocity, "CameraTop_optical_frame");
+#endif
+
                 }
 
                 vpDisplay::flush(image);
@@ -76,6 +85,11 @@ int main(int argc, char** argv)
             }
             catch(const vpException& e)
             {
+
+#ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
+                pepper_vs.callPepperControllerZeroVelocity("CameraTop_optical_frame");
+#endif
+
             }
         }
     }
