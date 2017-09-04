@@ -7,6 +7,8 @@
     @brief Visual servo loop using model-based tracking
 */
 
+#include "vp_pepper_visp_config.h"
+
 #include "pepper_visp.h"
 #include "model_based_tracker.h"
 #include "four_blobs_pattern_tracker.h"

@@ -8,9 +8,9 @@
            depth estimation
 */
 
-#include "pepper_visp.h"
-
 #include "vp_pepper_visp_config.h"
+
+#include "pepper_visp.h"
 
 #include "blobs_with_depth_tracker.h"
 #include "blobs_with_depth_task.h"
