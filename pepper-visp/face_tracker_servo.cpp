@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml");
 
         // get task
-        pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters);
+        pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters, "face_tracker_servo.yaml");
         face_depth_task.initializeTask(image);
 
         vpColVector velocity;

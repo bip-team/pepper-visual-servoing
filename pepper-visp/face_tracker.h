@@ -40,13 +40,7 @@ namespace pepper_visp
              */
             const bool detectFace(const vpImage<unsigned char>& image)
             {
-                bool face_detected = face_detector_.detect(image);
-                if(face_detector_.getNbObjects() > 1)
-                {
-                    throw(std::runtime_error("More than one face detected"));
-                }
-
-                return(face_detected);
+                return(face_detector_.detect(image));
             }
             
             
