@@ -127,6 +127,18 @@ namespace pepper_visp
                 velocity = task_.computeControlLaw();
             }
             
+            
+            /**
+             * @brief Get velocity
+             *
+             * @param[in, out] velocity
+             * @param[in]      time_since_init
+             */
+            void getVelocity(vpColVector& velocity, const double time_since_init)
+            {
+                velocity = task_.computeControlLaw(time_since_init);
+            }
+            
 
             /**
              * @brief Destructor
