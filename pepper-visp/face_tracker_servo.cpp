@@ -15,6 +15,8 @@
 #include "face_tracker.h"
 #include "face_with_depth_task.h"
 
+#include "people_detector.h"
+
 /**
  * @brief Visual servo control loop using face tracking
  *
@@ -29,6 +31,9 @@ int main(int argc, char** argv)
     {
         // connect to the robot
         pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
+        
+        // get people detector
+        pepper_visp::PeopleDetector people_detector(PEPPER_VISP_FOREHEAD_CONFIG_FILE); 
 
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
@@ -43,10 +48,11 @@ int main(int argc, char** argv)
         pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml");
 
         // get task
+        const double desired_distance = 0.5;
         pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters, "face_tracker_servo.yaml");
-        face_depth_task.initializeTask(image);
+        face_depth_task.initializeTask(image, desired_distance);
 
-        vpColVector velocity;
+        vpColVector velocity(6);
         while(true)
         {
             try
@@ -56,9 +62,11 @@ int main(int argc, char** argv)
                 pepper_vs.getImage(image);
                 vpDisplay::display(image);
             
-                if(face_tracker.detectFace(image))
+                if(face_tracker.detectFace(image) && people_detector.personDetected())
                 {
-                    face_depth_task.update(face_tracker.getFaceCog());
+                    face_depth_task.update(face_tracker.getFaceCog(), 
+                                           desired_distance,
+                                           people_detector.getDistanceFromPerson());
                     face_depth_task.getVelocity(velocity);
 
                     face_depth_task.displayServo(image);
@@ -70,6 +78,17 @@ int main(int argc, char** argv)
 
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
                 pepper_vs.callPepperController(velocity, "CameraTop_optical_frame");
+#endif
+                }
+                else
+                {
+
+#ifdef PEPPER_VISP_LOG_VELOCITY
+                pepper_vs.writeVelocityToFile(velocity);
+#endif
+
+#ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
+                pepper_vs.callPepperControllerZeroVelocity("CameraTop_optical_frame");
 #endif
 
                 }

@@ -65,37 +65,47 @@ namespace pepper_visp
             /**
              * @brief Initialize task
              */
-            void initializeTask(const vpImage<unsigned char>& image)
+            void initializeTask(const vpImage<unsigned char>& image, 
+                                const double                  desired_depth)
             {
                 desired_face_cog_.set_ij(image.getHeight()/2.0, image.getWidth()/2.0);                     
 
-                current_s_.buildFrom(current_x_, current_y_, current_z_);
-                desired_s_.buildFrom(desired_x_, desired_y_, desired_z_);
-                task_.addFeature(current_s_, desired_s_);
+                current_feature_.buildFrom(current_x_, current_y_, current_z_);
+                desired_feature_.buildFrom(desired_x_, desired_y_, desired_z_);
+                task_.addFeature(current_feature_, desired_feature_);
+
+                current_depth_feature_.buildFrom(current_x_, current_y_, desired_depth, 0.0);
+                desired_depth_feature_.buildFrom(current_x_, current_y_, desired_depth, 0.0);
+
+                task_.addFeature(current_depth_feature_, desired_depth_feature_);
             }
 
 
             /**
              * @brief Update task
              *
-             * @param[in] desired_depth
+             * @param[in] current_face_cog
              * @param[in] current_depth
              */
-            void update(const vpImagePoint& current_face_cog) 
+            void update(const vpImagePoint& current_face_cog, 
+                        const double        desired_depth, 
+                        const double        current_depth) 
             {
                 vpPixelMeterConversion::convertPoint(camera_parameters_, 
                                                      current_face_cog, 
                                                      current_x_, 
                                                      current_y_);
                 
-                current_s_.buildFrom(current_x_, current_y_, current_z_);
+                current_feature_.buildFrom(current_x_, current_y_, current_z_);
                 
                 vpPixelMeterConversion::convertPoint(camera_parameters_, 
                                                      desired_face_cog_, 
                                                      desired_x_, 
                                                      desired_y_);
                 
-                desired_s_.buildFrom(desired_x_, desired_y_, desired_z_);
+                desired_feature_.buildFrom(desired_x_, desired_y_, desired_z_);
+                
+                current_depth_feature_.buildFrom(current_x_, current_y_, current_depth, log(current_depth / desired_depth));
             }
 
 
@@ -188,8 +198,10 @@ namespace pepper_visp
 
         private:
             vpCameraParameters camera_parameters_;
-            vpFeaturePoint     current_s_;
-            vpFeaturePoint     desired_s_;
+            vpFeaturePoint     current_feature_;
+            vpFeaturePoint     desired_feature_;
+            vpFeatureDepth     current_depth_feature_;
+            vpFeatureDepth     desired_depth_feature_;
             vpServo            task_;
             vpImagePoint       desired_face_cog_;
 
