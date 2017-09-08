@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "vp_pepper_visp_config.h"
+
 #include <iostream>
 #include <string>
 #include <sys/time.h>
@@ -20,8 +22,6 @@
 #include <alcommon/alproxy.h>
 #include <alvision/alvisiondefinitions.h>
 #include <alproxies/alvideodeviceproxy.h>
-
-#include "vp_pepper_visp_config.h"
 
 #include <visp/vpImageConvert.h>
 #include <visp/vpXmlParserCamera.h>

@@ -20,7 +20,7 @@ set(PEPPER_VISP_LOG_VELOCITY          ON                                        
 set(PEPPER_VISP_USE_PEPPER_CONTROLLER OFF                                                         CACHE BOOL   "")
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/vp_pepper_visp_config.h.cmake.in
-               ${PROJECT_SOURCE_DIR}/pepper-visp/vp_pepper_visp_config.h
+               ${PROJECT_SOURCE_DIR}/include/pepper-visp/vp_pepper_visp_config.h
               )
 
 ##############
@@ -40,5 +40,6 @@ add_dependencies(TGT_build_libraries TGT_config-yaml_build_libraries)
 
 include_directories(SYSTEM "${CONFIG-YAML_DIR}/contrib/yaml-cpp/include/")
 include_directories(SYSTEM "${CONFIG-YAML_DIR}/include/")
+include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/include/")
 
-add_subdirectory(pepper-visp)
+add_subdirectory(src)

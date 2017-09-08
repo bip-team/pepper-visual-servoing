@@ -5,14 +5,12 @@
     (see @ref LICENSE or http://www.apache.org/licenses/LICENSE-2.0)
 
     @brief  Task minimizing error between desired and current 
-            position of blob(s) and keeping blob at desierd distance
+            position of face and keeping face at desired distance
 */
 
 #pragma once
 
 #include "vp_pepper_visp_config.h"
-
-#include "pepper_visp.h"
 
 #include <visp/vpImage.h>
 #include <visp3/blob/vpDot2.h>
@@ -23,6 +21,7 @@
 #include <visp3/visual_features/vpFeatureBuilder.h>
 #include <visp3/vs/vpServoDisplay.h>
 #include <visp3/visual_features/vpFeatureDepth.h>
+#include <visp/vpPixelMeterConversion.h>
 
 #include "config-yaml/config_reader.h"
 
@@ -30,9 +29,9 @@ namespace pepper_visp
 {
     /**
      * @brief Task minimizing error between desired and current 
-     *        position of blob(s) and keeping blob at desierd distance
+     *        position of face and keeping face at desierd distance
      */
-    class BlobsWithDepthTask
+    class FaceWithDepthTask
     {
         public:
             /**
@@ -40,7 +39,7 @@ namespace pepper_visp
              *
              * @param[in] camera_parameters
              */
-            BlobsWithDepthTask(const vpCameraParameters& camera_parameters) : camera_parameters_(camera_parameters)                              
+            FaceWithDepthTask(const vpCameraParameters& camera_parameters) : camera_parameters_(camera_parameters)                              
             {
                 setDefaults();
                 initialize();
@@ -53,8 +52,8 @@ namespace pepper_visp
              * @param[in] config_file
              * @param[in] camera_parameters
              */
-            BlobsWithDepthTask(const vpCameraParameters& camera_parameters, 
-                               const std::string&        config_file) : camera_parameters_(camera_parameters)                              
+            FaceWithDepthTask(const vpCameraParameters& camera_parameters, 
+                              const std::string&        config_file) : camera_parameters_(camera_parameters)                              
             {
                 readParameters(std::string(PEPPER_VISP_CONFIG_PATH) + config_file);
                 initialize();
@@ -63,25 +62,18 @@ namespace pepper_visp
 
             /**
              * @brief Initialize task
-             *
-             * @param[in] blobs 
-             * @param[in] desired_depth
              */
-            void initializeTask(const std::vector<vpDot2>& blobs, const double desired_depth)
+            void initializeTask(const vpImage<unsigned char>& image, 
+                                const double                  desired_depth)
             {
-                s_current_.resize(blobs.size());
-                s_desired_.resize(blobs.size());
-                for(std::size_t i = 0; i < blobs.size(); ++i)
-                {
-                    vpFeatureBuilder::create(s_current_[i], camera_parameters_, blobs[i]);
-                    vpFeatureBuilder::create(s_desired_[i], camera_parameters_, blobs[i]);
-                    task_.addFeature(s_current_[i], s_desired_[i]);
-                }
-                
-                current_depth_feature_.buildFrom(s_current_[blobs.size() - 1].get_x(),
-                                                 s_current_[blobs.size() - 1].get_y(), desired_depth, 0);
-                desired_depth_feature_.buildFrom(s_desired_[blobs.size() - 1].get_x(),
-                                                 s_desired_[blobs.size() - 1].get_y(), desired_depth, 0);
+                desired_face_cog_.set_ij(image.getHeight()/2.0, image.getWidth()/2.0);                     
+
+                current_feature_.buildFrom(current_x_, current_y_, current_z_);
+                desired_feature_.buildFrom(desired_x_, desired_y_, desired_z_);
+                task_.addFeature(current_feature_, desired_feature_);
+
+                current_depth_feature_.buildFrom(current_x_, current_y_, desired_depth, 0.0);
+                desired_depth_feature_.buildFrom(current_x_, current_y_, desired_depth, 0.0);
 
                 task_.addFeature(current_depth_feature_, desired_depth_feature_);
             }
@@ -90,19 +82,28 @@ namespace pepper_visp
             /**
              * @brief Update task
              *
-             * @param[in] blobs 
-             * @param[in] desired_depth
+             * @param[in] current_face_cog
              * @param[in] current_depth
              */
-            void update(const std::vector<vpDot2>& blobs, const double desired_depth, const double current_depth)
+            void update(const vpImagePoint& current_face_cog, 
+                        const double        desired_depth, 
+                        const double        current_depth) 
             {
-                for(std::size_t i = 0; i < blobs.size(); ++i)
-                {
-                    vpFeatureBuilder::create(s_current_[i], camera_parameters_, blobs[i]);
-                }
+                vpPixelMeterConversion::convertPoint(camera_parameters_, 
+                                                     current_face_cog, 
+                                                     current_x_, 
+                                                     current_y_);
                 
-                current_depth_feature_.buildFrom(s_current_[blobs.size() - 1].get_x(), s_current_[blobs.size() - 1].get_y(),
-                                                current_depth, log(current_depth / desired_depth));
+                current_feature_.buildFrom(current_x_, current_y_, current_z_);
+                
+                vpPixelMeterConversion::convertPoint(camera_parameters_, 
+                                                     desired_face_cog_, 
+                                                     desired_x_, 
+                                                     desired_y_);
+                
+                desired_feature_.buildFrom(desired_x_, desired_y_, desired_z_);
+                
+                current_depth_feature_.buildFrom(current_x_, current_y_, current_depth, log(current_depth / desired_depth));
             }
 
 
@@ -143,7 +144,7 @@ namespace pepper_visp
             /**
              * @brief Destructor
              */
-            ~BlobsWithDepthTask()
+            ~FaceWithDepthTask()
             {
                 task_.kill();
             }
@@ -160,7 +161,7 @@ namespace pepper_visp
                 yaml_config::ConfigReader config_reader(config_file); 
                 try
                 {
-                    config_reader.readScalar("blobs_with_depth_task", "lambda", lambda_); 
+                    config_reader.readScalar("face_with_depth_task", "lambda", lambda_); 
                 }
                 catch(const std::exception& e)
                 {
@@ -175,7 +176,7 @@ namespace pepper_visp
              */
             void setDefaults()
             {
-                lambda_ = 0.1;
+                lambda_ = 0.2;
             }
             
             
@@ -184,20 +185,27 @@ namespace pepper_visp
              */
             void initialize()
             {
+                desired_x_ = desired_y_ = current_x_ = current_y_ = 0.0;
+                desired_z_ = current_z_                           = 0.8;
+                
                 task_.setLambda(lambda_);
                 task_.setServo(vpServo::EYEINHAND_CAMERA);
-                task_.setInteractionMatrixType(vpServo::CURRENT, vpServo::PSEUDO_INVERSE);
+                task_.setInteractionMatrixType(vpServo::DESIRED);
             }
 
 
         private:
-            vpCameraParameters          camera_parameters_;
-            std::vector<vpFeaturePoint> s_current_;
-            std::vector<vpFeaturePoint> s_desired_;
-            vpFeatureDepth              current_depth_feature_;
-            vpFeatureDepth              desired_depth_feature_;
-            vpServo                     task_;
+            vpCameraParameters camera_parameters_;
+            vpFeaturePoint     current_feature_;
+            vpFeaturePoint     desired_feature_;
+            vpFeatureDepth     current_depth_feature_;
+            vpFeatureDepth     desired_depth_feature_;
+            vpServo            task_;
+            vpImagePoint       desired_face_cog_;
 
-            double                      lambda_;
+            double             lambda_;
+
+            double current_x_, current_y_, current_z_;
+            double desired_x_, desired_y_, desired_z_;
     };
 }//pepper_visp

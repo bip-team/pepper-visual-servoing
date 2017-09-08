@@ -4,21 +4,19 @@
     @copyright 2016-2017 INRIA. Licensed under the Apache License, Version 2.0.
     (see @ref LICENSE or http://www.apache.org/licenses/LICENSE-2.0)
 
-    @brief Visual servo loop using face tracker
+    @brief Visual servo loop using blob tracker and
+           depth estimation
 */
 
-#include <string>
+#include "pepper-visp/vp_pepper_visp_config.h"
 
-#include "vp_pepper_visp_config.h"
-
-#include "pepper_visp.h"
-#include "face_tracker.h"
-#include "face_with_depth_task.h"
-
-#include "people_detector.h"
+#include "pepper-visp/pepper_visp.h"
+#include "pepper-visp/blobs_with_depth_tracker.h"
+#include "pepper-visp/blobs_with_depth_task.h"
 
 /**
- * @brief Visual servo control loop using face tracking
+ * @brief Visual servo control loop using blob tracking
+ *        and depth estimation
  *
  * @param[in] argc number of arguments
  * @param[in] argv arguments
@@ -31,28 +29,35 @@ int main(int argc, char** argv)
     {
         // connect to the robot
         pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
-        
-        // get people detector
-        pepper_visp::PeopleDetector people_detector(PEPPER_VISP_FOREHEAD_CONFIG_FILE); 
 
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
         vpDisplayX d(image);
         vpDisplay::setTitle(image, "ViSP viewer");
+        
+        // initialize image points, features etc.
+        const std::size_t number_of_blobs = 1;
+        const double      desired_depth   = 0.40;
 
         vpCameraParameters camera_parameters = pepper_vs.getIntrinsicCameraParameters();
-        
+
         pepper_vs.getImage(image);
         
         // get tracker
-        pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml");
+        pepper_visp::BlobsWithDepthTracker blobs_with_depth_tracker(number_of_blobs,
+                                                                    desired_depth,
+                                                                    camera_parameters);
+        blobs_with_depth_tracker.initializeByClick(image);
 
         // get task
-        const double desired_distance = 0.7;
-        pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters, "face_tracker_servo.yaml");
-        face_depth_task.initializeTask(image, desired_distance);
+        pepper_visp::BlobsWithDepthTask blobs_with_depth_task(camera_parameters, 
+                                                              "blobs_tracker_servo.yaml");
+        
+        blobs_with_depth_task.initializeTask(blobs_with_depth_tracker.getBlobs(), 
+                                             blobs_with_depth_tracker.getDesiredDepth());
 
-        vpColVector velocity(6);
+        // servo loop
+        vpColVector velocity;
         while(true)
         {
             try
@@ -62,15 +67,14 @@ int main(int argc, char** argv)
                 pepper_vs.getImage(image);
                 vpDisplay::display(image);
             
-                if(face_tracker.detectFace(image) && people_detector.personDetected())
-                {
-                    face_depth_task.update(face_tracker.getFaceCog(), 
-                                           desired_distance,
-                                           people_detector.getDistanceFromPerson());
-                    face_depth_task.getVelocity(velocity);
+                blobs_with_depth_tracker.track(image);
 
-                    face_depth_task.displayServo(image);
-                    face_tracker.displayFace(image);
+                blobs_with_depth_task.update(blobs_with_depth_tracker.getBlobs(),      
+                                             blobs_with_depth_tracker.getDesiredDepth(),
+                                             blobs_with_depth_tracker.getCurrentDepth());
+
+                blobs_with_depth_task.getVelocity(velocity);
+                blobs_with_depth_task.displayServo(image);
 
 #ifdef PEPPER_VISP_LOG_VELOCITY
                 pepper_vs.writeVelocityToFile(velocity);
@@ -79,19 +83,6 @@ int main(int argc, char** argv)
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
                 pepper_vs.callPepperController(velocity, "CameraTop_optical_frame");
 #endif
-                }
-                else
-                {
-
-#ifdef PEPPER_VISP_LOG_VELOCITY
-                pepper_vs.writeVelocityToFile(velocity);
-#endif
-
-#ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                pepper_vs.callPepperControllerZeroVelocity("CameraTop_optical_frame");
-#endif
-
-                }
 
                 vpDisplay::flush(image);
                 
