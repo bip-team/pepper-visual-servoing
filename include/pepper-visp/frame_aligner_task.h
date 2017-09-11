@@ -36,6 +36,18 @@ namespace pepper_visp
             {
                 initialize();
             }
+            
+            
+            /**
+             * @brief Constructor
+             *
+             * @param[in] lambda 
+             */
+            FrameAlignerTask(const std::string& config_file)
+            {
+                readParameters(std::string(PEPPER_VISP_CONFIG_PATH) + config_file);
+                initialize();
+            }
 
 
             /**
@@ -127,6 +139,26 @@ namespace pepper_visp
                 vpMatrix I(dofs, dofs);
                 I.eye();
                 task_.set_eJe(I);
+            }
+            
+            
+            /**
+             * @brief Read parameters from config file
+             *
+             * @param[in] config_file
+             */
+            void readParameters(const std::string& config_file)
+            {
+                yaml_config::ConfigReader config_reader(config_file); 
+                try
+                {
+                    config_reader.readScalar("frame_aligner_task", "lambda", lambda_); 
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << "Exception in reading configuration file: " << e.what() << std::endl;
+                    throw;
+                }
             }
 
 
