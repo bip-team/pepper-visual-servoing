@@ -20,7 +20,7 @@ set(PEPPER_VISP_LOG_VELOCITY          ON                                        
 set(PEPPER_VISP_USE_PEPPER_CONTROLLER OFF                                                         CACHE BOOL   "")
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/vp_pepper_visp_config.h.cmake.in
-               ${PROJECT_SOURCE_DIR}/include/pepper-visp/vp_pepper_visp_config.h
+               ${PROJECT_SOURCE_DIR}/src/vp_pepper_visp_config.h
               )
 
 ##############

@@ -7,7 +7,7 @@
     @brief Visual servo loop using model-based tracking
 */
 
-#include "pepper-visp/vp_pepper_visp_config.h"
+#include "vp_pepper_visp_config.h"
 
 #include "pepper-visp/pepper_visp.h"
 #include "pepper-visp/model_based_tracker.h"

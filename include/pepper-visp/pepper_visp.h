@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "vp_pepper_visp_config.h"
-
 #include <iostream>
 #include <string>
 #include <sys/time.h>

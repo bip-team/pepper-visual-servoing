@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "vp_pepper_visp_config.h"
-
 #include <boost/shared_ptr.hpp>
 
 #include <alerror/alerror.h>

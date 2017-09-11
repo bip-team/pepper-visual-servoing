@@ -7,7 +7,7 @@
     @brief Visual servo loop using face tracker
 */
 
-#include "pepper-visp/vp_pepper_visp_config.h"
+#include "vp_pepper_visp_config.h"
 
 #include "pepper-visp/pepper_visp.h"
 #include "pepper-visp/face_tracker.h"
@@ -76,6 +76,7 @@ int main(int argc, char** argv)
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
                     pepper_vs.callPepperController(velocity, "CameraTop_optical_frame");
 #endif
+
                 }
                 else
                 {
