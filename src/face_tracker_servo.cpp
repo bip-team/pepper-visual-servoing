@@ -70,22 +70,22 @@ int main(int argc, char** argv)
                     face_tracker.displayFace(image);
 
 #ifdef PEPPER_VISP_LOG_VELOCITY
-                pepper_vs.writeVelocityToFile(velocity);
+                    pepper_vs.writeVelocityToFile(velocity);
 #endif
 
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                pepper_vs.callPepperController(velocity, "CameraTop_optical_frame");
+                    pepper_vs.callPepperController(velocity, "CameraTop_optical_frame");
 #endif
                 }
                 else
                 {
 
 #ifdef PEPPER_VISP_LOG_VELOCITY
-                pepper_vs.writeVelocityToFile(velocity);
+                    pepper_vs.writeVelocityToFile(velocity);
 #endif
 
 #ifdef PEPPER_VISP_USE_PEPPER_CONTROLLER
-                pepper_vs.callPepperControllerZeroVelocity("CameraTop_optical_frame");
+                    pepper_vs.callPepperControllerZeroVelocity("CameraTop_optical_frame");
 #endif
 
                 }
