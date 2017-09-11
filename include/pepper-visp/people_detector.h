@@ -128,7 +128,7 @@ namespace pepper_visp
                 try
                 {
                     people_detection_.reset(new AL::ALPeoplePerceptionProxy(robot_ip_, robot_port_));  
-                    people_detection_->subscribe("People", 30, 1.0);
+                    people_detection_->subscribe("People");
                     
                     memory_.reset(new AL::ALMemoryProxy(robot_ip_, robot_port_));  
                 }
