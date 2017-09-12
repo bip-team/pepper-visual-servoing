@@ -57,7 +57,7 @@ int main(int argc, char** argv)
                                              blobs_with_depth_tracker.getDesiredDepth());
 
         // servo loop
-        vpColVector velocity;
+        vpColVector velocity(6);
         while(true)
         {
             try
