@@ -61,8 +61,7 @@ namespace pepper_visp
             /**
              * @brief Initialize task
              */
-            void initializeTask(const vpImage<unsigned char>& image, 
-                                const double                  desired_depth)
+            void initializeTask(const vpImage<unsigned char>& image) 
             {
                 desired_face_cog_.set_ij(image.getHeight()/2.0, image.getWidth()/2.0);                     
 
@@ -70,8 +69,8 @@ namespace pepper_visp
                 desired_feature_.buildFrom(desired_x_, desired_y_, desired_z_);
                 task_.addFeature(current_feature_, desired_feature_);
 
-                current_depth_feature_.buildFrom(current_x_, current_y_, desired_depth, 0.0);
-                desired_depth_feature_.buildFrom(current_x_, current_y_, desired_depth, 0.0);
+                current_depth_feature_.buildFrom(current_x_, current_y_, current_z_, 0.0);
+                desired_depth_feature_.buildFrom(current_x_, current_y_, current_z_, 0.0);
 
                 task_.addFeature(current_depth_feature_, desired_depth_feature_);
             }

@@ -90,18 +90,20 @@ namespace pepper_visp
 
             /**
              * @brief Get current depth
+             *
+             * @return current_depth
              */
             double getCurrentDepth() const
             {
-                double current_depth = depth_to_area_ * (1.0 / sqrt(blobs_[number_of_features_ - 1].getArea() /
-                                       (camera_parameters_.get_px() * camera_parameters_.get_py())));
-                
-                return(current_depth);
+                return(depth_to_area_ * (1.0 / sqrt(blobs_[number_of_features_ - 1].getArea() /
+                                       (camera_parameters_.get_px() * camera_parameters_.get_py()))));
             }
 
             
             /**
              * @brief Get desired depth
+             *
+             * @return desired_depth
              */
             double getDesiredDepth() const
             {
@@ -111,6 +113,8 @@ namespace pepper_visp
 
             /**
              * @brief Get blobs
+             *
+             * @return blobs
              */
             const std::vector<vpDot2>& getBlobs() const
             {

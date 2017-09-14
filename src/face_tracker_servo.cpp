@@ -12,7 +12,6 @@
 #include "pepper-visp/pepper_visp.h"
 #include "pepper-visp/face_tracker.h"
 #include "pepper-visp/face_with_depth_task.h"
-#include "pepper-visp/people_detector.h"
 
 /**
  * @brief Visual servo control loop using face tracking
@@ -29,9 +28,6 @@ int main(int argc, char** argv)
         // connect to the robot
         pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
         
-        // get people detector
-        pepper_visp::PeopleDetector people_detector(PEPPER_VISP_FOREHEAD_CONFIG_FILE); 
-
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
         vpDisplayX d(image);
@@ -39,15 +35,25 @@ int main(int argc, char** argv)
 
         vpCameraParameters camera_parameters = pepper_vs.getIntrinsicCameraParameters();
         
-        pepper_vs.getImage(image);
-        
         // get tracker
-        pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml");
+        const double desired_distance = 1.0;
+        pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml",
+                                              camera_parameters,
+                                              desired_distance);
+
+        bool tracker_initialized = false;
+        while(!tracker_initialized)
+        {
+            pepper_vs.getImage(image);
+            vpDisplay::display(image);
+            vpDisplay::flush(image);
+            
+            tracker_initialized = face_tracker.initializeTracker(image);
+        }
 
         // get task
-        const double desired_distance = 0.5;
         pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters, "face_tracker_servo.yaml");
-        face_depth_task.initializeTask(image, desired_distance);
+        face_depth_task.initializeTask(image);
 
         vpColVector velocity(6);
         while(true)
@@ -59,11 +65,12 @@ int main(int argc, char** argv)
                 pepper_vs.getImage(image);
                 vpDisplay::display(image);
             
-                if(face_tracker.detectFace(image) && people_detector.personDetected())
+                if(face_tracker.detectFace(image))
                 {
                     face_depth_task.update(face_tracker.getFaceCog(), 
                                            desired_distance,
-                                           people_detector.getDistanceFromPerson());
+                                           face_tracker.getCurrentDepth());
+                    
                     face_depth_task.getVelocity(velocity);
 
                     face_depth_task.displayServo(image);

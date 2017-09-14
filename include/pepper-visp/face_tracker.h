@@ -26,7 +26,9 @@ namespace pepper_visp
              *
              * @param[in] classifier_filename
              */
-            FaceTracker(const std::string& classifier_filename)
+            FaceTracker(const std::string& classifier_filename, 
+                        const vpCameraParameters& camera_parameters,
+                        const double desired_depth) : camera_parameters_(camera_parameters), desired_depth_(desired_depth)
             {
                 initialize(std::string(PEPPER_VISP_DATA_PATH) + classifier_filename);
             }
@@ -41,6 +43,38 @@ namespace pepper_visp
             const bool detectFace(const vpImage<unsigned char>& image)
             {
                 return(face_detector_.detect(image));
+            }
+
+
+            /**
+             * @brief Initialize tracker
+             *
+             * @param[in] image
+             * @return    initialized
+             */
+            const bool initializeTracker(const vpImage<unsigned char>& image)
+            {
+                if(detectFace(image))
+                {
+                    computeDepthToAreaCoeff();
+
+                    return(true);
+                }
+
+                return(false);
+            }
+            
+            
+            /**
+             * @brief Get current depth
+             *
+             * @return current_depth
+             */
+            double getCurrentDepth() const
+            {
+                return(depth_to_area_ * (1.0 / sqrt((face_detector_.getBBox(0).getWidth() *
+                                               face_detector_.getBBox(0).getHeight()) / (camera_parameters_.get_px() *
+                                                          camera_parameters_.get_py()))));
             }
             
             
@@ -76,9 +110,23 @@ namespace pepper_visp
             {
                 face_detector_.setCascadeClassifierFile(classifier_filename);
             }
+            
+            
+            /**
+             * @brief Compute depth to area coefficient
+             */
+            void computeDepthToAreaCoeff()
+            {
+                depth_to_area_ = desired_depth_ / (1.0 / sqrt((face_detector_.getBBox(0).getWidth() *
+                                               face_detector_.getBBox(0).getHeight()) / (camera_parameters_.get_px() *
+                                                          camera_parameters_.get_py())));
+            }
 
 
         private:
-            vpDetectorFace face_detector_;
+            vpDetectorFace     face_detector_;
+            vpCameraParameters camera_parameters_;
+            double             desired_depth_;
+            double             depth_to_area_;
     };
 }//pepper_visp
