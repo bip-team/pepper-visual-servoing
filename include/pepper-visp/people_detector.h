@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <sstream> 
+
 #include <boost/shared_ptr.hpp>
 
 #include <alerror/alerror.h>
@@ -67,7 +69,7 @@ namespace pepper_visp
                 initialize();
             }
 
-
+            
             /**
              * @brief Get distance from person
              *
@@ -75,9 +77,10 @@ namespace pepper_visp
              */
             double getDistanceFromPerson()
             {   
+                double distance;
                 try
                 {
-                    person_info_ = memory_->getData("PeoplePerception/PeopleDetected");
+                    distance = memory_->getData(std::string("PeoplePerception/Person/") + id_ + std::string("/Distance"));
                 }
                 catch(const std::exception& e)
                 {
@@ -85,28 +88,57 @@ namespace pepper_visp
                     throw;
                 }
                 
-                return(person_info_[1][0][1]);
+                return(distance);
             }
 
 
             /**
-             * @brief Person detected
+             * @brief Is person visible
              *
-             * @return person detected 
+             * @return person visible 
              */
-            bool personDetected()
+            bool isPersonVisible()
+            {
+                try
+                {
+                    return(memory_->getData(std::string("PeoplePerception/Person/") + id_ + std::string("/IsVisible")));
+                }
+                catch(const std::exception& e)
+                {
+                    std::cerr << "Exception in isPersonVisible()." << e.what() << std::endl;
+                    throw;
+                }
+            }
+
+
+            /**
+             * @brief Initialize detector
+             *
+             * @return tracker initialized 
+             */
+            bool initializeDetector()
             {
                 try
                 {
                     people_ = memory_->getData("PeoplePerception/VisiblePeopleList");
+                    if(people_.getSize())
+                    {
+                        person_info_ = memory_->getData("PeoplePerception/PeopleDetected");
+
+                        std::ostringstream id;                       
+                        id << person_info_[1][0][0];
+                        id_ = id.str();
+                        
+                        return(true);
+                    }
                 }
                 catch(const std::exception& e)
                 {
-                    std::cerr << "Exception in personDetected()." << e.what() << std::endl;
+                    std::cerr << "Exception in initializeDetector()." << e.what() << std::endl;
                     throw;
                 }
-                
-                return(people_.getSize());
+
+                return(false);
             }
 
 
@@ -183,5 +215,6 @@ namespace pepper_visp
             AL::ALValue person_info_;
             std::string robot_ip_;
             int         robot_port_;
+            std::string id_;
     };
 }//pepper_visp
