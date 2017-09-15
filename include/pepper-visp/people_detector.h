@@ -13,12 +13,6 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <alerror/alerror.h>
-#include <alvision/alimage.h>
-#include <alcommon/albroker.h>
-#include <alcommon/alproxy.h>
-#include <alvision/alvisiondefinitions.h>
-#include <alproxies/alvideodeviceproxy.h>
 #include <alproxies/alpeopleperceptionproxy.h>
 #include <alproxies/almemoryproxy.h>
 
@@ -121,6 +115,7 @@ namespace pepper_visp
                 try
                 {
                     people_ = memory_->getData("PeoplePerception/VisiblePeopleList");
+
                     if(people_.getSize())
                     {
                         person_info_ = memory_->getData("PeoplePerception/PeopleDetected");
@@ -161,6 +156,11 @@ namespace pepper_visp
                 {
                     people_detection_.reset(new AL::ALPeoplePerceptionProxy(robot_ip_, robot_port_));  
                     people_detection_->subscribe("People");
+                    people_detection_->setFastModeEnabled(false);
+                    people_detection_->setMovementDetectionEnabled(false);
+                    people_detection_->setMaximumDetectionRange(5.0);
+                    people_detection_->setTimeBeforePersonDisappears(1000.0);
+                    people_detection_->setTimeBeforeVisiblePersonDisappears(1000.0);
                     
                     memory_.reset(new AL::ALMemoryProxy(robot_ip_, robot_port_));  
                 }

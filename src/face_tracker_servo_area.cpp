@@ -12,6 +12,7 @@
 #include "pepper-visp/pepper_visp.h"
 #include "pepper-visp/face_tracker.h"
 #include "pepper-visp/face_with_depth_task.h"
+#include "pepper-visp/people_detector.h"
 
 /**
  * @brief Visual servo control loop using face tracking
@@ -26,7 +27,7 @@ int main(int argc, char** argv)
     try
     {
         // connect to the robot
-        pepper_visp::PepperVS pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
+        pepper_visp::PepperVS       pepper_vs(PEPPER_VISP_FOREHEAD_CONFIG_FILE);
         
         // get image display
         vpImage<unsigned char> image(pepper_vs.getImageHeight(), pepper_vs.getImageWidth());
@@ -40,7 +41,7 @@ int main(int argc, char** argv)
         pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml",
                                               camera_parameters,
                                               desired_distance);
-
+        
         bool tracker_initialized = false;
         while(!tracker_initialized)
         {
@@ -52,7 +53,7 @@ int main(int argc, char** argv)
         }
 
         // get task
-        pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters, "face_tracker_servo.yaml");
+        pepper_visp::FaceWithDepthTask face_depth_task(camera_parameters, "face_tracker_servo_area.yaml");
         face_depth_task.initializeTask(image);
 
         vpColVector velocity(6);
@@ -64,7 +65,7 @@ int main(int argc, char** argv)
                
                 pepper_vs.getImage(image);
                 vpDisplay::display(image);
-            
+
                 if(face_tracker.detectFace(image))
                 {
                     face_depth_task.update(face_tracker.getFaceCog(), 
