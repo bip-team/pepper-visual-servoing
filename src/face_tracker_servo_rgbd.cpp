@@ -40,7 +40,7 @@ int main(int argc, char** argv)
         vpCameraParameters camera_parameters = pepper_vs.getIntrinsicCameraParameters();
         
         // get tracker
-        const double desired_distance = 0.5;
+        const double desired_distance = 0.7;
         pepper_visp::FaceTracker face_tracker("haarcascade_frontalface_alt.xml",
                                               camera_parameters,
                                               desired_distance);

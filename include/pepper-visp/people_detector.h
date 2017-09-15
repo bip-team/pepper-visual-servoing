@@ -71,18 +71,15 @@ namespace pepper_visp
              */
             double getDistanceFromPerson()
             {   
-                double distance;
                 try
                 {
-                    distance = memory_->getData(std::string("PeoplePerception/Person/") + id_ + std::string("/Distance"));
+                    return(memory_->getData(std::string("PeoplePerception/Person/") + id_ + std::string("/Distance")));
                 }
                 catch(const std::exception& e)
                 {
                     std::cerr << "Exception in getDistanceFromPerson()." << e.what() << std::endl;
                     throw;
                 }
-                
-                return(distance);
             }
 
 
@@ -156,9 +153,6 @@ namespace pepper_visp
                 {
                     people_detection_.reset(new AL::ALPeoplePerceptionProxy(robot_ip_, robot_port_));  
                     people_detection_->subscribe("People");
-                    people_detection_->setFastModeEnabled(false);
-                    people_detection_->setMovementDetectionEnabled(false);
-                    people_detection_->setMaximumDetectionRange(5.0);
                     people_detection_->setTimeBeforePersonDisappears(1000.0);
                     people_detection_->setTimeBeforeVisiblePersonDisappears(1000.0);
                     

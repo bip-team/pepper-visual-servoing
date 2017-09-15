@@ -12,7 +12,6 @@
 #include "pepper-visp/pepper_visp.h"
 #include "pepper-visp/face_tracker.h"
 #include "pepper-visp/face_with_depth_task.h"
-#include "pepper-visp/people_detector.h"
 
 /**
  * @brief Visual servo control loop using face tracking
