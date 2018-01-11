@@ -7,7 +7,16 @@ all: update clean
 clean:
 	rm -Rf build-*
 
+doc:
+	cd doc; ${MAKE}
+
+doc-view:
+	cd doc; ${MAKE} view
+
+doc-clean:
+	cd doc; ${MAKE} clean
+
 update:
 	git submodule update --init --recursive
 
-.PHONY: clean 
+.PHONY: clean doc

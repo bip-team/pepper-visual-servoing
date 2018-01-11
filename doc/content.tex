@@ -1,0 +1,67 @@
+\section{Prerequisites}
+\subsection{Naoqi workspace preparation}
+\noindent It is recommended to work with qibuild workspaces when developing software for Softbank robots. Qibuild is a
+convenience wrapper over CMake. Hence, the following steps are recommended
+to work with pepper-visual-servoing within a qibuild workspace (unless existing workspace is to be used):
+
+\begin{enumerate}
+\item \texttt{mkdir /path/to/workspace/}
+\item \texttt{cd /path/to/workspace/; qibuild init}
+\item \texttt{cp -R /path/to/remote-sdk /path/to/workspace/remote-sdk}
+\item \texttt{qitoolchain create mytoolchain-remote /path/to/workspace/sdk/toolchain.xml}
+\item \texttt{qibuild add-config mytoolchain-remote -t mytoolchain-remote}
+\item \texttt{cd /path/to/workspace/; git clone <pepper-visual-servoing>}
+\end{enumerate}
+
+\noindent For the steps above it is assumed that qibuild is installed onto the system. It can be installed using for example pip
+Python packages manager.
+
+\subsection{Compilation}
+\noindent For compilation of the code the Aldebaran (Softbank Robotics) sdk toolchain is required. The
+software has been developed using the sdk of version: naoqi-sdk-2.4.3.28-linux64. Hence, it is recommended to use
+this sdk version. It can be obtained from the Aldebaran's official repositories (after registration).\\
+
+\noindent To compile:
+\noindent If your remote toolchain is named \texttt{'mytoolchain-remote'}:
+
+- Type \texttt{'make'}.\\
+
+\noindent If your toolchain has a different name:
+
+- Type \texttt{'make TC=name-of-your-toolchain'}.\\
+
+\noindent Inside cmake input script \texttt{pepper\_visp.cmake} located inside cmake directory, user can enable or disable
+options for compilation.\\
+
+\noindent The following compilation options are available for use with CMake:\\ \\
+\begin{tabular}{|l|p{5cm}|}
+\hline
+Option & Description \\
+\hline
+\texttt{PEPPER\_VISP\_CONFIG\_PATH} & sets path to the config directory. This directory contains config files for
+control loops and calibration files for cameras.\\
+\hline
+\texttt{PEPPER\_VISP\_INTRINSIC\_CAMERA\_FILE} & sets path to the file with cameras intrinsic parameters.\\ \hline
+\texttt{PEPPER\_VISP\_FOREHEAD\_CONFIG\_FILE} & sets path to the file with forehead camera configuration. \\ \hline
+\texttt{PEPPER\_VISP\_CHIN\_CONFIG\_FILE} & sets path to the file with chin camera configuration.\\ \hline
+\texttt{PEPPER\_VISP\_DATA\_PATH} & sets path to the directory with various data (logs, models etc.).\\ \hline
+\texttt{PEPPER\_VISP\_LOG\_VELOCITY} & if set to true logs camera velocity to a file.\\ \hline
+\texttt{PEPPER\_VISP\_USE\_PEPPER\_CONTROLLER} & if set to true send input to the pepper controller.\\ \hline
+\end{tabular} \\ 
+
+\noindent All options listed above have their default settings. Logged velocity input can serve for examination but also 
+for input to humoto control loops (\texttt{test\_004} in \texttt{pepper\_ik} module in humoto)
+and then visualized using pepper-visualization software. Short description of how to use it can be seen in the
+documentation of \texttt{humoto-pepper-controller}.\\
+
+\subsection{Installation}
+\noindent The project compiles several executables located inside \texttt{<pepper-visual-servoing>/src/} directory.  
+Currently there are sources realizing tracking blobs on images, tracking faces on images and tracking a 3D model.
+Sources are implemented using tasks and trackers which are inside \\
+\texttt{<pepper-visual-servoing>/include/pepper-visp/} directory. \\
+
+\section{Usage}
+\subsection{Launching executables}
+\noindent In the build directory inside \texttt{bin/} folder one can find build executables. Simply launch them 
+having \texttt{humoto-controller-pepper} running on the robot. Make sure to provide the right parameters such as ip of
+the robot in the \texttt{yaml} configuration file.

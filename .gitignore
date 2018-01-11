@@ -1,3 +1,7 @@
 build-*
 src/vp_pepper_visp_config.h
 data/greenbox.0.pos
+doc/*.aux
+doc/*.log
+doc/*.out
+doc/*.pdf
